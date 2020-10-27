@@ -1,0 +1,121 @@
+html, body {
+	height: 100%;
+	margin: 0;
+}
+div.background{
+	position: relative;
+    overflow: hidden;
+    height: 100%;
+	width: 100%;
+}
+div.background::before{
+	content: "";
+	background-repeat: repeat;
+	background-image: url('https://decryptology.net/bg.svg');
+	background-position: center; 
+	background-size: cover;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: -1;
+	transform: scale(2);
+}
+@media (max-width: 600px) {
+	div.background::before{
+		content: "";
+		background-repeat: repeat;
+		background-image: url('https://decryptology.net/bg.svg');
+		background-position: center; 
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		z-index: -1;
+		transform: scale(4);
+	}
+}
+a {
+	background: #ffe6f2;
+	color: hotpink;
+	font-weight: bold;
+	text-decoration: none;
+	border-radius: 5px;
+    border: 1px solid hotpink;
+    padding: 5px 10px;
+    margin: 2px;
+}
+a:visited {
+	color: hotpink;
+	border: 1px solid hotpink;
+}
+a:hover {
+  	color: deeppink;
+  	border: 1px solid deeppink;
+}
+div.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+}
+div.card {
+	color: #2D4650;
+	padding: 30px; 
+	-webkit-box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
+	-moz-box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
+	box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
+	border-radius: 10px 10px 10px 10px; 
+	-moz-border-radius: 10px 10px 10px 10px; 
+	-webkit-border-radius: 10px 10px 10px 10px; 
+	border: 0px solid #000000;
+	background: rgba(255,255,255,1);
+	background: -moz-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
+	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,0.95)), color-stop(100%, rgba(237,237,237,0.9)));
+	background: -webkit-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
+	background: -o-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
+	background: -ms-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
+	background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=1 );
+}
+div.heading {
+	text-align: center;
+	font-family: 'Secular One', sans-serif;
+	font-size: 32px;
+}
+div.navigation {
+	margin: auto;
+	padding: 20px 0px 0px 0px;
+	text-align: center;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 16px;
+	line-height: 2.5;
+	width: 300px;
+}
+div.content {
+	text-align: center;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 16px;
+	padding-top: 10px;
+	word-wrap: normal;
+}
+div.domainname {
+	margin: 0 auto;
+    display: inline-block;
+}
+div.dotnet {
+	font-size: 26px;
+	padding: 0px 10px;
+	margin: 0 auto;
+    display: inline-block;
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	background: #2D4650;
+	color: #FFFFFF;
+}
+.logo {
+}
+.logo404 {
+}
