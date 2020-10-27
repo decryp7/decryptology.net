@@ -20,6 +20,24 @@ div.background::before{
 	z-index: -1;
 	transform: scale(2);
 }
+
+/* Safari 11+ */
+@media not all and (min-resolution:.001dpcm)
+{ @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+	div.background::before{
+		content: "";
+		background-repeat: repeat;
+		background-image: url('https://decryptology.net/bg.png');
+		background-position: center; 
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		z-index: -1;
+		transform: scale(2);
+	}
+}}
+
 @media (max-width: 600px) {
 	div.background::before{
 		content: "";
@@ -34,6 +52,24 @@ div.background::before{
 		transform: scale(4);
 	}
 }
+
+/* Safari 11+ */
+@media not all and (min-resolution:.001dpcm) and (max-width: 600px)
+{ @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+	div.background::before{
+		content: "";
+		background-repeat: repeat;
+		background-image: url('https://decryptology.net/bg.png');
+		background-position: center; 
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		z-index: -1;
+		transform: scale(4);
+	}
+}}
+
 a {
 	background: #ffe6f2;
 	color: hotpink;
