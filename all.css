@@ -10,7 +10,7 @@ div.background{
 }
 div.background::before{
 	content: "";
-	background-repeat: repeat;
+	background-repeat: no-repeat;
 	background-image: url('https://decryptology.net/bg.svg');
 	background-position: center; 
 	background-size: cover;
@@ -20,13 +20,12 @@ div.background::before{
 	z-index: -1;
 	transform: scale(2);
 }
-
 /* Safari 11+ */
 @media not all and (min-resolution:.001dpcm)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
 	div.background::before{
 		content: "";
-		background-repeat: repeat;
+		background-repeat: no-repeat;
 		background-image: url('https://decryptology.net/bg.png');
 		background-position: center; 
 		background-size: cover;
@@ -36,12 +35,38 @@ div.background::before{
 		z-index: -1;
 		transform: scale(2);
 	}
+	/* https://codepen.io/giana/pen/pPLodQ Fake image sharpen*/
+	.sharpen {
+		mix-blend-mode: hard-light;
+	}
+	.sharpen, .sharpen::before, .sharpen::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		overflow: hidden;
+	}
+	.sharpen::before, .sharpen::after {
+	    content: '';
+		background-repeat: no-repeat;
+		background-image: url('https://decryptology.net/bg.png');
+		background-position: center; 
+		background-size: cover;
+		transform: scale(2);
+	}
+	.sharpen::after {
+		-webkit-filter: invert(1);
+	    filter: invert(1);
+		opacity: 0.5;
+		top: -1px;
+		left: -1px;
+	}
 }}
-
 @media (max-width: 600px) {
 	div.background::before{
 		content: "";
-		background-repeat: repeat;
+		background-repeat: no-repeat;
 		background-image: url('https://decryptology.net/bg.svg');
 		background-position: center; 
 		background-size: cover;
@@ -52,13 +77,12 @@ div.background::before{
 		transform: scale(4);
 	}
 }
-
 /* Safari 11+ */
 @media not all and (min-resolution:.001dpcm) and (max-width: 600px)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
 	div.background::before{
 		content: "";
-		background-repeat: repeat;
+		background-repeat: no-repeat;
 		background-image: url('https://decryptology.net/bg.png');
 		background-position: center; 
 		background-size: cover;
@@ -67,6 +91,32 @@ div.background::before{
 		position: absolute;
 		z-index: -1;
 		transform: scale(4);
+	}
+	.sharpen {
+		mix-blend-mode: hard-light;
+	}
+	.sharpen, .sharpen::before, .sharpen::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		overflow: hidden;
+	}
+	.sharpen::before, .sharpen::after {
+	    content: '';
+		background-repeat: no-repeat;
+		background-image: url('https://decryptology.net/bg.png');
+		background-position: center; 
+		background-size: cover;
+		transform: scale(4);
+	}
+	.sharpen::after {
+		-webkit-filter: invert(1);
+	    filter: invert(1);
+		opacity: 0.5;
+		top: -1px;
+		left: -1px;
 	}
 }}
 
