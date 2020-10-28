@@ -2,9 +2,6 @@ html, body {
 	height: 100%;
 	margin: 0;
 }
-img {
-	image-rendering: pixelated;
-}
 div.background{
 	position: relative;
     overflow: hidden;
