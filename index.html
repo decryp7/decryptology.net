@@ -13,6 +13,14 @@
 		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
 		<link rel="manifest" href="site.webmanifest">
+		<script language="javascript">
+		var ci_links = ["https://ci.decryptology.net/decryp7/workflow-dotnet/",
+		              "https://ci.decryptology.net/decryp7/TextDifferenceBetweenNET35And462/",
+		              "https://ci.decryptology.net/decryp7/database-dotnet/",
+		              "https://ci.decryptology.net/decryp7/DontSleep/",
+		              "https://ci.decryptology.net/decryp7/DontDisableMyEthernet/",
+		              "https://ci.decryptology.net/decryp7/caddy-docker/"]
+        </script>
 	</head>
 	<body>
 		<div class="background"></div>
@@ -38,7 +46,7 @@
 				        <!--<a href="https://s3.decryptology.net/shared/artwork.pdf" target="_blank">artwork</a>-->
 				        <a href="https://www.linkedin.com/in/decryp7" target="_blank">linkedin</a>
 				    	<a href="https://dev.decryptology.net/explore/repos" target="_blank">development</a>
-				    	<a href="https://ci.decryptology.net/decryp7/caddy-docker/" target="_blank">continuous_integration</a>
+				    	<a href="#ci" target="_blank">continuous_integration</a>
 				    	<a href="https://repository.decryptology.net" target="_blank">repository</a>
 				    	<a href="https://analytics.decryptology.net" target="_blank">analytics</a>
 				    	<a href="https://workflow.decryptology.net" target="_blank">workflow</a>
@@ -49,4 +57,13 @@
 		    </div>
 	    </main>
 	</body>
+    <script language="javascript">
+		var randIndex = Math.random() * ci_links.length;
+		randIndex = parseInt(randIndex, 10);
+		var a = document.querySelector('a[href="#ci"]');
+		if (a) 
+		{
+		  a.setAttribute('href', ci_links[randIndex]);
+		}
+	</script>
 </html>
