@@ -326,10 +326,10 @@
 			<path d="M3.6 217.36 L7.2 216.18 L9.36 219.7 L11.52 219.7 L13.16 222.37 L11.1 225.73 L7.92 228.49 L3.6 226.15 L3.6 225.41
 						 L0 221.46 L1.69 218.71 L3.34 216.03 L3.6 217.36 Z" class="st1"/>
 		</g>
-		<g id="shape95-161" v:mID="95" v:groupContext="shape" transform="translate(287.894,-157.774) rotate(30)">
+		<g id="shape95-161" v:mID="95" v:groupContext="shape" transform="translate(231.493,-77.2493) rotate(30)">
 			<title>Sheet.95</title>
-			<path d="M3.6 217.36 L7.2 216.18 L9.36 219.7 L11.52 219.7 L13.16 222.37 L11.1 225.73 L7.92 228.49 L3.6 226.15 L3.6 225.41
-						 L0 221.46 L1.69 218.71 L3.34 216.03 L3.6 217.36 Z" class="st1"/>
+			<path d="M7.86 204.18 L15.72 201.62 L20.44 209.3 L25.16 209.3 L28.74 215.13 L24.23 222.46 L17.3 228.49 L7.86 223.37 L7.86
+						 221.77 L0 213.14 L3.69 207.13 L7.29 201.28 L7.86 204.18 Z" class="st1"/>
 		</g>
 		<g id="group96-164" transform="translate(239.059,153.952) rotate(130)" v:mID="96" v:groupContext="group">
 			<title>Sheet.96</title>
@@ -1014,6 +1014,26 @@
 					<path d="M0 228.49 L1.07 228.49" class="st12"/>
 				</g>
 			</g>
+		</g>
+		<g id="shape301-608" v:mID="301" v:groupContext="shape" transform="translate(195.768,-80.3034) rotate(30)">
+			<title>Sheet.301</title>
+			<path d="M3.6 217.36 L7.2 216.18 L9.36 219.7 L11.52 219.7 L13.16 222.37 L11.1 225.73 L7.92 228.49 L3.6 226.15 L3.6 225.41
+						 L0 221.46 L1.69 218.71 L3.34 216.03 L3.6 217.36 Z" class="st1"/>
+		</g>
+		<g id="shape302-611" v:mID="302" v:groupContext="shape" transform="translate(376.47,252.989) rotate(120)">
+			<title>Sheet.302</title>
+			<path d="M3.48 221.87 L6.97 221.18 L9.06 223.26 L11.14 223.26 L12.73 224.85 L10.73 226.85 L7.66 228.49 L3.48 227.1 L3.48
+						 226.66 L0 224.31 L1.64 222.67 L3.23 221.08 L3.48 221.87 Z" class="st1"/>
+		</g>
+		<g id="shape303-614" v:mID="303" v:groupContext="shape" transform="translate(126.85,-63.9083)">
+			<title>Sheet.303</title>
+			<path d="M1.94 224.81 L3.88 224.42 L5.04 225.58 L6.2 225.58 L7.09 226.46 L5.98 227.58 L4.27 228.49 L1.94 227.71 L1.94
+						 227.47 L0 226.16 L0.91 225.25 L1.8 224.37 L1.94 224.81 Z" class="st1"/>
+		</g>
+		<g id="shape304-617" v:mID="304" v:groupContext="shape" transform="translate(220.075,-130.521) rotate(30)">
+			<title>Sheet.304</title>
+			<path d="M2.18 222.52 L4.35 221.89 L5.66 223.77 L6.96 223.77 L7.95 225.21 L6.7 227.01 L4.79 228.49 L2.18 227.23 L2.18
+						 226.84 L0 224.72 L1.02 223.24 L2.02 221.8 L2.18 222.52 Z" class="st1"/>
 		</g>
 	</g>
 </svg>
