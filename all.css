@@ -56,7 +56,6 @@ div.background::before{
 		transform: scale(2);
 	}
 	.sharpen::after {
-		-webkit-filter: invert(1);
 	    filter: invert(1);
 		opacity: 0.5;
 		top: -1px;
@@ -112,7 +111,6 @@ div.background::before{
 		transform: scale(4);
 	}
 	.sharpen::after {
-		-webkit-filter: invert(1);
 	    filter: invert(1);
 		opacity: 0.5;
 		top: -1px;
@@ -148,21 +146,11 @@ div.center {
 div.card {
 	color: #2D4650;
 	padding: 30px; 
-	-webkit-box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
-	-moz-box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
 	box-shadow: 10px 10px 50px 12px rgba(0,0,0,0.25); 
 	border-radius: 10px 10px 10px 10px; 
-	-moz-border-radius: 10px 10px 10px 10px; 
-	-webkit-border-radius: 10px 10px 10px 10px; 
 	border: 0px solid #000000;
 	background: rgba(255,255,255,1);
-	background: -moz-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
-	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,0.95)), color-stop(100%, rgba(237,237,237,0.9)));
-	background: -webkit-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
-	background: -o-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
-	background: -ms-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
 	background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.95) 47%, rgba(237,237,237,0.9) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=1 );
 }
 div.heading {
 	text-align: center;
@@ -195,8 +183,6 @@ div.dotnet {
 	margin: 0 auto;
     display: inline-block;
 	border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
 	border: 0px solid #000000;
 	background: #2D4650;
 	color: #FFFFFF;
