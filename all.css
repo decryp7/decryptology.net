@@ -33,7 +33,7 @@ div.background::before{
 		width: 100%;
 		position: absolute;
 		z-index: -1;
-		transform: scale(2);
+		transform: scale(3);
 	}
 	/* https://codepen.io/giana/pen/pPLodQ Fake image sharpen*/
 	.sharpen {
@@ -53,7 +53,7 @@ div.background::before{
 		background-image: url('https://decryptology.net/bg.png');
 		background-position: center; 
 		background-size: cover;
-		transform: scale(2);
+		transform: scale(3);
 	}
 	.sharpen::after {
 	    filter: invert(1);
@@ -89,7 +89,7 @@ div.background::before{
 		width: 100%;
 		position: absolute;
 		z-index: -1;
-		transform: scale(4);
+		transform: scale(3);
 	}
 	.sharpen {
 		mix-blend-mode: hard-light;
@@ -108,7 +108,7 @@ div.background::before{
 		background-image: url('https://decryptology.net/bg.png');
 		background-position: center; 
 		background-size: cover;
-		transform: scale(4);
+		transform: scale(3);
 	}
 	.sharpen::after {
 	    filter: invert(1);
