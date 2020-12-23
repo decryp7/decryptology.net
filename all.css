@@ -160,12 +160,12 @@ div.background::before{
 a {
 	background: #ffe6f2;
 	color: hotpink;
-	font-weight: bold;
 	text-decoration: none;
 	border-radius: 5px;
     border: 1px solid hotpink;
     padding: 5px 10px;
     margin: 2px;
+    font-weight: bold;
 }
 a:visited {
 	color: hotpink;
@@ -193,21 +193,22 @@ div.card {
 }
 div.heading {
 	text-align: center;
-	font-family: 'Secular One', sans-serif;
+	font-family: 'Rubik', sans-serif;
 	font-size: 32px;
+	font-weight: bold;
 }
 div.navigation {
 	margin: auto;
 	padding: 20px 0px 0px 0px;
 	text-align: center;
-	font-family: 'Source Sans Pro', sans-serif;
+	font-family: 'Rubik', sans-serif;
 	font-size: 16px;
 	line-height: 2.5;
 	width: 300px;
 }
 div.content {
 	text-align: center;
-	font-family: 'Source Sans Pro', sans-serif;
+	font-family: 'Rubik', sans-serif;
 	font-size: 16px;
 	padding-top: 10px;
 	word-wrap: normal;
