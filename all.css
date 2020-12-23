@@ -165,7 +165,6 @@ a {
     border: 1px solid hotpink;
     padding: 5px 10px;
     margin: 2px;
-    font-weight: bold;
 }
 a:visited {
 	color: hotpink;
@@ -195,7 +194,6 @@ div.heading {
 	text-align: center;
 	font-family: 'Rubik', sans-serif;
 	font-size: 32px;
-	font-weight: bold;
 }
 div.navigation {
 	margin: auto;
@@ -216,16 +214,6 @@ div.content {
 div.domainname {
 	margin: 0 auto;
     display: inline-block;
-}
-div.dotnet {
-	font-size: 26px;
-	padding: 0px 10px;
-	margin: 0 auto;
-    display: inline-block;
-	border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	background: #2D4650;
-	color: #FFFFFF;
 }
 .logo {
 }
