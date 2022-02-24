@@ -13,6 +13,7 @@ div.background{
 }
 div.background::before{
 	content: "";
+	background: white;
 	background-repeat: no-repeat;
 	background-image: url('https://decryptology.net/bg.svg');
 	background-position: center; 
@@ -26,6 +27,7 @@ div.background::before{
 @media (max-width: 600px) {
 	div.background::before{
 		content: "";
+		background: white;
 		background-repeat: no-repeat;
 		background-image: url('https://decryptology.net/bg.svg');
 		background-position: center; 
