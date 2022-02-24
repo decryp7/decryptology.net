@@ -1,3 +1,6 @@
+:root {
+  color-scheme: normal;
+}
 html, body {
 	height: 100%;
 	margin: 0;
@@ -19,9 +22,6 @@ div.background::before{
 	position: absolute;
 	z-index: -1;
 	transform: scale(2);
-}
-@media (prefers-color-scheme: dark) {
-
 }
 @media (max-width: 600px) {
 	div.background::before{
