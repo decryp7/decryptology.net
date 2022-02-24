@@ -21,7 +21,7 @@ div.background::before{
 	transform: scale(2);
 }
 @media (prefers-color-scheme: dark) {
-	background: white;
+
 }
 @media (max-width: 600px) {
 	div.background::before{
