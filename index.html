@@ -67,9 +67,9 @@
 	    </main>
 	</body>
     <script language="javascript">
-		var randIndex = Math.random() * ci_links.length;
+		let randIndex = Math.random() * ci_links.length;
 		randIndex = parseInt(randIndex, 10);
-		var a = document.querySelector('a[href="#ci"]');
+		let a = document.querySelector('a[href="#ci"]');
 		if (a) 
 		{
 		  a.setAttribute('href', ci_links[randIndex]);
