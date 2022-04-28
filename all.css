@@ -162,7 +162,7 @@ div.background::before{
 		left: -1px;
 	}
 }}
-a {
+a.button {
 	background: #ffe6f2;
 	color: hotpink;
 	text-decoration: none;
@@ -171,11 +171,11 @@ a {
     padding: 5px 10px;
     margin: 2px;
 }
-a:visited {
+a.button:visited {
 	color: hotpink;
 	border: 1px solid hotpink;
 }
-a:hover {
+a.button:hover {
   	color: deeppink;
   	border: 1px solid deeppink;
 }
