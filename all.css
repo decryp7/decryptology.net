@@ -40,7 +40,7 @@ div.background::before{
 	}
 }
 /* Safari 11+ */
-@media not all and (min-resolution:.001dpcm)
+@media not all and (max-device-width: 480px)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
 	div.background::before{
 		content: "";
