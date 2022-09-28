@@ -40,7 +40,7 @@ div.background::before{
 	}
 }
 /* Safari 11+ */
-@media not all and (max-device-width: 480px)
+@media only screen and (max-device-width: 480px)
 { @supports (-webkit-touch-callout:none) {
 	div.background::before{
 		content: "";
