@@ -41,7 +41,7 @@ div.background::before{
 }
 /* Safari 11+ */
 @media not all and (max-device-width: 480px)
-{ @supports (-webkit-appearance:none) {
+{
 	div.background::before{
 		content: "";
 		background-repeat: no-repeat;
@@ -79,10 +79,10 @@ div.background::before{
 		top: -1px;
 		left: -1px;
 	}
-}}
+}
 /* For portrait layouts only */
 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)
-{ @supports (-webkit-appearance:none) {
+{
 	div.background::before{
 		content: "";
 		background-repeat: no-repeat;
@@ -120,10 +120,10 @@ div.background::before{
 		top: -1px;
 		left: -1px;
 	}
-}}
+}
 /* For landscape layouts only */
 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)
-{ @supports (-webkit-appearance:none) {
+{
 	div.background::before{
 		content: "";
 		background-repeat: no-repeat;
@@ -161,7 +161,7 @@ div.background::before{
 		top: -1px;
 		left: -1px;
 	}
-}}
+}
 a.button {
 	background: #ffe6f2;
 	color: hotpink;
