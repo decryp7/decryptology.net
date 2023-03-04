@@ -51,6 +51,18 @@ div.background::before{
 		z-index: -1;
 		transform: scale(2);
 }
+.iphone.safari div.background::before {
+		content: "";
+		background-repeat: no-repeat;
+		background-image: url('https://decryptology.net/bg.png');
+		background-position: center; 
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		z-index: -1;
+		transform: scale(4);
+}
 .gecko div.background::before {
 		content: "";
 		background-repeat: no-repeat;
