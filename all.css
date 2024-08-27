@@ -15,7 +15,7 @@ div.background::before{
 	content: "";
 	background: white;
 	background-repeat: no-repeat;
-	background-image: url('https://decryptology.net/bg.svg');
+	background-image: url('https://decryptology.net/bg.png');
 	background-position: center; 
 	background-size: cover;
 	height: 100%;
@@ -29,7 +29,7 @@ div.background::before{
 		content: "";
 		background: white;
 		background-repeat: no-repeat;
-		background-image: url('https://decryptology.net/bg.svg');
+		background-image: url('https://decryptology.net/bg.png');
 		background-position: center; 
 		background-size: cover;
 		height: 100%;
