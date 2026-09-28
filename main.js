@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -79,13 +80,14 @@ const bar = document.querySelector('#bar > i');
 manager.onProgress = (_url, loaded, total) => { bar.style.width = `${(loaded / total) * 100}%`; };
 manager.onLoad = () => document.getElementById('loading').classList.add('done');
 
-new RGBELoader(manager).load('env.hdr?v=202609290025', (hdr) => {
+new RGBELoader(manager).load('env.hdr?v=202609290554', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
 });
 
 const clickable = [];
-new GLTFLoader(manager).load('scene.glb?v=202609290025', (gltf) => {
+const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
+new GLTFLoader(manager).setDRACOLoader(draco).load('scene.glb?v=202609290554', (gltf) => {
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;
