@@ -21,13 +21,35 @@ function showStill(reason) {
   if (renderer) renderer.domElement.style.display = 'none';   // three.js sets an inline display: block
 }
 
+// Phones and tablets get lighter textures (1024 px) and a lower pixel ratio: iOS kills a tab that uses too much
+// graphics memory ("A problem repeatedly occurred"), and the full set needs ~430 MB.
+const MOBILE = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod|Android/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+// Crash guard: a flag set while the 3D view runs, cleared when the page is left normally. If the tab crashed,
+// the flag survives the automatic reload, so show the still photo instead of crashing again.
+const CRASH_FLAG = 'scene3d-running';
+let crashedBefore = false;
 try {
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  crashedBefore = sessionStorage.getItem(CRASH_FLAG) === '1';
+  sessionStorage.setItem(CRASH_FLAG, '1');
+  addEventListener('pagehide', () => sessionStorage.removeItem(CRASH_FLAG));
+} catch { /* storage unavailable: no guard */ }
+document.getElementById('retry3d')?.addEventListener('click', () => {
+  try { sessionStorage.removeItem(CRASH_FLAG); } catch {}
+  location.reload();
+});
+if (crashedBefore) {
+  showStill('the 3D view crashed this tab last time');
+  throw new Error('3D view skipped after a crash');
+}
+
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: !MOBILE, powerPreference: 'high-performance' });
 } catch (e) {
   showStill(e);
   throw e;
 }
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, MOBILE ? 1.5 : 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.NeutralToneMapping;   // same curve as Blender's "Khronos PBR Neutral"
 renderer.toneMappingExposure = 1.0;
@@ -101,14 +123,14 @@ manager.onLoad = () => {
   if (!document.body.classList.contains('still')) renderer.domElement.style.opacity = '1';
 };
 
-new RGBELoader(manager).load('env.hdr?v=202609290554', (hdr) => {
+new RGBELoader(manager).load('env.hdr?v=202609290606', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
 }, undefined, (e) => console.warn('No reflections (env.hdr failed):', e));
 
 const clickable = [];
 const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
-new GLTFLoader(manager).setDRACOLoader(draco).load('scene.glb?v=202609290554', (gltf) => {
+new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' : 'scene.glb') + '?v=202609290606', (gltf) => {
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;
