@@ -12,12 +12,30 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
 // three.js adds only what changes with the viewpoint: reflections from env.hdr, captured in the same room.
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+// If the 3D view can't run (no WebGL, a failed download, a lost GPU context), keep the still photo.
+let renderer;
+function showStill(reason) {
+  console.warn('3D scene unavailable, showing the still photo:', reason);
+  document.body.classList.add('still');
+  document.getElementById('loading').classList.add('done');
+  if (renderer) renderer.domElement.style.display = 'none';   // three.js sets an inline display: block
+}
+
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+} catch (e) {
+  showStill(e);
+  throw e;
+}
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.NeutralToneMapping;   // same curve as Blender's "Khronos PBR Neutral"
 renderer.toneMappingExposure = 1.0;
 document.body.appendChild(renderer.domElement);
+renderer.domElement.addEventListener('webglcontextlost', () => showStill('WebGL context lost'));
+// The canvas stays invisible (the still photo shows through) until the scene has loaded, then fades in.
+renderer.domElement.style.opacity = '0';
+renderer.domElement.style.transition = 'opacity .8s ease';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07080d);
@@ -78,12 +96,15 @@ composer.addPass(lens);
 const manager = new THREE.LoadingManager();
 const bar = document.querySelector('#bar > i');
 manager.onProgress = (_url, loaded, total) => { bar.style.width = `${(loaded / total) * 100}%`; };
-manager.onLoad = () => document.getElementById('loading').classList.add('done');
+manager.onLoad = () => {
+  document.getElementById('loading').classList.add('done');
+  if (!document.body.classList.contains('still')) renderer.domElement.style.opacity = '1';
+};
 
 new RGBELoader(manager).load('env.hdr?v=202609290554', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
-});
+}, undefined, (e) => console.warn('No reflections (env.hdr failed):', e));
 
 const clickable = [];
 const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
@@ -113,7 +134,7 @@ new GLTFLoader(manager).setDRACOLoader(draco).load('scene.glb?v=202609290554', (
   VIEWS.poster = frame('Poster_Art', new THREE.Vector3(0.05, 0.12, 1), 0.95);
   VIEWS.box = frame('GiftBox', new THREE.Vector3(0.1, 1.6, 1), 0.36);
   flyTo('hero', 0);
-});
+}, undefined, (e) => showStill(e));
 
 // ---------------------------------------------------------------- camera moves
 let tween = null;

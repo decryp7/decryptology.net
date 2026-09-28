@@ -18,12 +18,17 @@
     }
     html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden;
       font: 14px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
-    canvas { display: block; }
-    #loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg);
-      transition: opacity .6s ease; }
+    canvas { display: block; position: relative; z-index: 1; }
+    /* Still photo of the scene: shown while the 3D view loads, and kept if it can't run. */
+    #still { position: fixed; inset: 0; z-index: 0; }
+    #still img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    body.still canvas, body.still #views, body.still #hint { display: none; }
+    #loading { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center;
+      background: rgba(7, 8, 13, 0.45); transition: opacity .6s ease; text-shadow: 0 1px 3px #000; }
     #loading.done { opacity: 0; pointer-events: none; }
     #bar { width: 220px; height: 2px; background: #222; margin-top: 12px; }
     #bar > i { display: block; height: 100%; width: 0; background: #e2b35c; transition: width .2s; }
+    #hud, #nav { position: relative; z-index: 3; }
     #hud { position: fixed; left: 16px; bottom: 16px; right: 16px; display: flex; gap: 12px; align-items: center;
       pointer-events: none; }
     #views { pointer-events: auto; display: flex; gap: 2px; padding: 3px; background: var(--panel);
@@ -81,6 +86,10 @@
   </style>
 </head>
 <body>
+  <picture id="still">
+    <source media="(max-width: 700px)" srcset="fallback-800.jpg">
+    <img src="fallback.jpg" alt="Mid-Autumn still life: Hannah's ladybug painting above a tray of flowers, a mooncake on a blue-and-white plate, osmanthus tea, a lantern under the moon and a navy-and-gold gift box" fetchpriority="high">
+  </picture>
   <div id="loading"><div>Loading scene…<div id="bar"><i></i></div></div></div>
   <nav id="nav" aria-label="Site links">
     <button id="menu-btn" aria-expanded="false" aria-controls="panel"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Links</button>
@@ -122,6 +131,6 @@
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
     } }
   </script>
-  <script type="module" src="main.js?v=202609290554"></script>
+  <script type="module" src="main.js?v=202609290559"></script>
 </body>
 </html>
