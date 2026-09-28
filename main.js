@@ -55,6 +55,19 @@ renderer.toneMapping = THREE.NeutralToneMapping;   // same curve as Blender's "K
 renderer.toneMappingExposure = 1.0;
 document.body.appendChild(renderer.domElement);
 renderer.domElement.addEventListener('webglcontextlost', () => showStill('WebGL context lost'));
+// Software WebGL (no GPU: SwiftShader, llvmpipe...) takes seconds per frame for this scene and freezes the page,
+// e.g. in PageSpeed's test machines. Keep the still photo there. (?3d forces the 3D view, for testing.)
+const FORCE_3D = new URLSearchParams(location.search).has('3d');
+{
+  const gl = renderer.getContext();
+  const info = gl.getExtension('WEBGL_debug_renderer_info');
+  const gpu = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '');
+  if (!FORCE_3D && /swiftshader|llvmpipe|softpipe|software|basic render|microsoft basic/i.test(gpu)) {
+    showStill(`software rendering (${gpu})`);
+    renderer.dispose();
+    throw new Error('3D view skipped: no GPU');
+  }
+}
 // The canvas stays invisible (the still photo shows through) until the scene has loaded, then fades in.
 renderer.domElement.style.opacity = '0';
 renderer.domElement.style.transition = 'opacity .8s ease';
@@ -216,7 +229,25 @@ window.addEventListener('resize', () => {
   composer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Watchdog: once the scene is in, time the first frames; if the device can't keep up (typical frame > 0.4 s),
+// stop the 3D view before it freezes the page and keep the still photo.
+let frameTimes = null, lastFrame = 0;
+manager.onLoad = ((onLoad) => () => { onLoad(); frameTimes = []; })(manager.onLoad);
+
 renderer.setAnimationLoop((now) => {
+  if (frameTimes && !FORCE_3D) {
+    if (lastFrame) frameTimes.push(now - lastFrame);
+    if (frameTimes.length >= 20) {
+      const typical = [...frameTimes].sort((a, b) => a - b)[10];
+      frameTimes = null;
+      if (typical > 400) {
+        renderer.setAnimationLoop(null);
+        showStill(`too slow to render (${Math.round(typical)} ms per frame)`);
+        return;
+      }
+    }
+  }
+  lastFrame = now;
   lens.uniforms.time.value = now / 1000;
   lens.uniforms.aspect.value = window.innerWidth / window.innerHeight;
   stepTween(now);

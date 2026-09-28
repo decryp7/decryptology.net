@@ -156,7 +156,7 @@
   <script type="module">
     // Start the 3D scene only once the page (still photo, links) has painted and finished loading, so the
     // page itself is fast; the scene fades in over the photo a moment later.
-    const start = () => import('./main.js?v=202609290606').catch((e) => console.warn(e));
+    const start = () => import('./main.js?v=202609290658').catch((e) => console.warn(e));
     const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
     if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
   </script>
