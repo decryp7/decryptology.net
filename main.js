@@ -8,6 +8,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { Ladybug } from './ladybug.js?v=202609290729';
 
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
 // three.js adds only what changes with the viewpoint: reflections from env.hdr, captured in the same room.
@@ -136,14 +137,14 @@ manager.onLoad = () => {
   if (!document.body.classList.contains('still')) renderer.domElement.style.opacity = '1';
 };
 
-new RGBELoader(manager).load('env.hdr?v=202609290606', (hdr) => {
+new RGBELoader(manager).load('env.hdr?v=202609290729', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
 }, undefined, (e) => console.warn('No reflections (env.hdr failed):', e));
 
 const clickable = [];
 const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
-new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' : 'scene.glb') + '?v=202609290606', (gltf) => {
+new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' : 'scene.glb') + '?v=202609290729', (gltf) => {
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;
@@ -169,7 +170,20 @@ new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' 
   VIEWS.poster = frame('Poster_Art', new THREE.Vector3(0.05, 0.12, 1), 0.95);
   VIEWS.box = frame('GiftBox', new THREE.Vector3(0.1, 1.6, 1), 0.36);
   flyTo('hero', 0);
+
+  // The ladybug: steps out of the painting a moment after the scene appears, then wanders now and then.
+  ladybug = new Ladybug(root, scene, camera);
+  if (FORCE_3D) { window.__ladybug = ladybug; window.__cam = camera; window.__controls = controls; }   // for testing
+  if (ladybug.ready) {
+    clickable.push(ladybug.obj);
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTimeout(() => { if (!document.body.classList.contains('still')) ladybug.intro(); }, 2500);
+      ladybug.scheduleWander(performance.now() + 20000);
+    }
+  }
 }, undefined, (e) => showStill(e));
+
+let ladybug = null;
 
 // ---------------------------------------------------------------- camera moves
 let tween = null;
@@ -217,6 +231,7 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   const hit = ray.intersectObjects(clickable, false)[0];
   if (!hit) return;
   const n = hit.object.name;
+  if (ladybug && ladybug.ready && hit.object === ladybug.obj) { ladybug.flying || ladybug.wander(); return; }
   flyTo(n.startsWith('Mooncake') ? 'cake' : n.startsWith('Poster') ? 'poster' : 'box');
 });
 
@@ -247,7 +262,9 @@ renderer.setAnimationLoop((now) => {
       }
     }
   }
+  const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 0;
   lastFrame = now;
+  if (ladybug) ladybug.update(dt, now);
   lens.uniforms.time.value = now / 1000;
   lens.uniforms.aspect.value = window.innerWidth / window.innerHeight;
   stepTween(now);
