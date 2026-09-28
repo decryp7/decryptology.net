@@ -25,39 +25,75 @@
       border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; backdrop-filter: blur(8px); }
     #hud button:hover { border-color: #e2b35c; }
     #hint { color: var(--muted); margin-left: auto; background: var(--panel); padding: 8px 12px; border-radius: 8px; }
-    #nav { position: fixed; top: 16px; left: 16px; right: 16px; display: flex; gap: 8px 12px; align-items: center;
-      flex-wrap: wrap; pointer-events: none; }
-    #nav > * { pointer-events: auto; }
-    #links { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
-    #links a { color: var(--ink); text-decoration: none; background: var(--panel); border: 1px solid #ffffff22;
-      border-radius: 999px; padding: 6px 12px; font-size: 13px; backdrop-filter: blur(8px); white-space: nowrap; }
+    #nav { pointer-events: none; }
+    #nav a, #nav button { pointer-events: auto; }
+    #links { position: fixed; top: 16px; right: 16px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+      max-width: calc(100% - 220px); }
+    #links a { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); text-decoration: none;
+      background: var(--panel); border: 1px solid #ffffff22; border-radius: 999px; padding: 6px 12px; font-size: 13px;
+      backdrop-filter: blur(8px); white-space: nowrap; }
     #links a:hover, #links a:focus-visible { border-color: #e2b35c; }
+    #links a.cta { background: #e2b35c; color: #1a1206; border-color: #e2b35c; font-weight: 600; }
+    #links a.cta:hover, #links a.cta:focus-visible { background: #f0c778; }
+    #links svg { width: 14px; height: 14px; flex: none; }
+    #links .ext { opacity: .55; font-size: 11px; margin-left: -2px; }
+    #meta { position: fixed; top: 16px; left: 16px; display: flex; gap: 10px; font-size: 12px;
+      background: var(--panel); padding: 6px 10px; border-radius: 8px; backdrop-filter: blur(8px); }
+    #meta a { color: var(--muted); text-decoration: none; }
+    #meta a:hover, #meta a:focus-visible { color: var(--ink); text-decoration: underline; }
+    #menu-btn { display: none; }
     .touch { display: none; }
     @media (hover: none) and (pointer: coarse) { .mouse { display: none; } .touch { display: inline; } }
     @media (max-width: 600px) {
       #hud { left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); gap: 6px; }
       #hud button { padding: 7px 11px; font-size: 13px; }
-      #nav { top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; }
-      #links { margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
-        -webkit-overflow-scrolling: touch; }
-      #links::-webkit-scrollbar { display: none; }
+      #menu-btn { display: inline-flex; align-items: center; gap: 6px; position: fixed; right: 12px;
+        top: max(12px, env(safe-area-inset-top)); background: var(--panel); color: var(--ink); border: 1px solid #ffffff22;
+        border-radius: 999px; padding: 7px 13px; font: inherit; font-size: 13px; cursor: pointer; backdrop-filter: blur(8px); }
+      #nav.open #menu-btn { border-color: #e2b35c; }
+      #panel { display: none; position: fixed; right: 12px; top: calc(max(12px, env(safe-area-inset-top)) + 44px);
+        width: min(260px, calc(100% - 24px)); box-sizing: border-box; padding: 8px; border-radius: 14px;
+        background: rgba(12, 14, 22, 0.9); border: 1px solid #ffffff22; backdrop-filter: blur(12px); }
+      #nav.open #panel { display: block; }
+      #links, #meta { position: static; max-width: none; background: none; backdrop-filter: none; padding: 0; }
+      #links { flex-direction: column; gap: 2px; }
+      #links a { border: 0; background: none; border-radius: 8px; padding: 10px 10px; font-size: 15px; gap: 10px; }
+      #links a:hover, #links a:focus-visible { background: #ffffff12; }
+      #links svg { width: 17px; height: 17px; }
+      #links .ext { margin-left: auto; }
+      #links a.cta { margin-top: 4px; justify-content: center; }
+      #meta { margin-top: 8px; padding: 8px 10px 4px; border-top: 1px solid #ffffff1a; border-radius: 0; font-size: 13px; gap: 16px; }
       #hint { order: -1; margin: 0; width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 12px; text-align: center; }
     }
   </style>
 </head>
 <body>
   <div id="loading"><div>Loading scene…<div id="bar"><i></i></div></div></div>
-  <nav id="nav">
-    <div id="links">
-      <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener">Curriculum Vitae</a>
-      <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://dev.decryptology.net/decryp7" target="_blank" rel="noopener">Development</a>
-      <a href="https://s3.decryptology.net/shared/artwork.pdf" target="_blank" rel="noopener">Artwork</a>
-      <a href="https://grafana.decryptology.net/public-dashboards/d5ad4aa549e140ad96bafcf6329cdec2" target="_blank" rel="noopener">Analytics</a>
-      <a href="https://grafana.decryptology.net/public-dashboards/b1088744edcf436ea1fe91d3dafd1b01" target="_blank" rel="noopener">Monitoring</a>
-      <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;%64%65%63%72%79%70%74%40%64%65%63%72%79%70%74%6F%6C%6F%67%79%2E%6E%65%74">Mail Me</a>
+  <nav id="nav" aria-label="Site links">
+    <button id="menu-btn" aria-expanded="false" aria-controls="panel"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Links</button>
+    <div id="panel">
+      <div id="links">
+        <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae<span class="ext" aria-hidden="true">↗</span></a>
+        <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>LinkedIn<span class="ext" aria-hidden="true">↗</span></a>
+        <a href="https://dev.decryptology.net/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>Development<span class="ext" aria-hidden="true">↗</span></a>
+        <a href="https://s3.decryptology.net/shared/artwork.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8-.4-1.2.5-2.2 1.6-2.2H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>Artwork<span class="ext" aria-hidden="true">↗</span></a>
+        <a class="cta" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;%64%65%63%72%79%70%74%40%64%65%63%72%79%70%74%6F%6C%6F%67%79%2E%6E%65%74"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Mail Me</a>
+      </div>
+      <div id="meta">
+        <a href="https://grafana.decryptology.net/public-dashboards/d5ad4aa549e140ad96bafcf6329cdec2" target="_blank" rel="noopener">Analytics</a>
+        <a href="https://grafana.decryptology.net/public-dashboards/b1088744edcf436ea1fe91d3dafd1b01" target="_blank" rel="noopener">Monitoring</a>
+      </div>
     </div>
   </nav>
+  <script>
+    (() => {
+      const nav = document.getElementById('nav'), btn = document.getElementById('menu-btn');
+      const set = (open) => { nav.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); };
+      btn.addEventListener('click', (e) => { e.stopPropagation(); set(!nav.classList.contains('open')); });
+      document.addEventListener('pointerdown', (e) => { if (!nav.contains(e.target)) set(false); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+    })();
+  </script>
   <div id="hud">
     <button data-view="hero">Photo view</button>
     <button data-view="cake">Mooncake</button>
