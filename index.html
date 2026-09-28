@@ -25,17 +25,42 @@
       border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; backdrop-filter: blur(8px); }
     #hud button:hover { border-color: #e2b35c; }
     #hint { color: var(--muted); margin-left: auto; background: var(--panel); padding: 8px 12px; border-radius: 8px; }
+    #nav { position: fixed; top: 16px; left: 16px; right: 16px; display: flex; gap: 8px 12px; align-items: center;
+      flex-wrap: wrap; pointer-events: none; }
+    #nav > * { pointer-events: auto; }
+    #name { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 15px; letter-spacing: .02em;
+      background: var(--panel); padding: 7px 12px; border-radius: 8px; backdrop-filter: blur(8px); }
+    #links { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+    #links a { color: var(--ink); text-decoration: none; background: var(--panel); border: 1px solid #ffffff22;
+      border-radius: 999px; padding: 6px 12px; font-size: 13px; backdrop-filter: blur(8px); white-space: nowrap; }
+    #links a:hover, #links a:focus-visible { border-color: #e2b35c; }
     .touch { display: none; }
     @media (hover: none) and (pointer: coarse) { .mouse { display: none; } .touch { display: inline; } }
     @media (max-width: 600px) {
       #hud { left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); gap: 6px; }
       #hud button { padding: 7px 11px; font-size: 13px; }
+      #nav { top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; }
+      #links { margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+        -webkit-overflow-scrolling: touch; }
+      #links::-webkit-scrollbar { display: none; }
       #hint { order: -1; margin: 0; width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 12px; text-align: center; }
     }
   </style>
 </head>
 <body>
   <div id="loading"><div>Loading scene…<div id="bar"><i></i></div></div></div>
+  <nav id="nav">
+    <span id="name">d3cryp70l06y_</span>
+    <div id="links">
+      <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener">curriculum_vitae</a>
+      <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener">linkedin</a>
+      <a href="https://dev.decryptology.net/decryp7" target="_blank" rel="noopener">development</a>
+      <a href="https://s3.decryptology.net/shared/artwork.pdf" target="_blank" rel="noopener">artwork</a>
+      <a href="https://grafana.decryptology.net/public-dashboards/d5ad4aa549e140ad96bafcf6329cdec2" target="_blank" rel="noopener">analytics</a>
+      <a href="https://grafana.decryptology.net/public-dashboards/b1088744edcf436ea1fe91d3dafd1b01" target="_blank" rel="noopener">monitoring</a>
+      <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;%64%65%63%72%79%70%74%40%64%65%63%72%79%70%74%6F%6C%6F%67%79%2E%6E%65%74">mail_me</a>
+    </div>
+  </nav>
   <div id="hud">
     <button data-view="hero">Photo view</button>
     <button data-view="cake">Mooncake</button>

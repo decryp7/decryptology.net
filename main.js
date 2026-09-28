@@ -20,11 +20,11 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07080d);
 
-const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.01, 20);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 20);
 
 // Views are framed for 4:3. On narrower screens keep the same horizontal field: widen the FOV a
 // little, then pull the camera back for the rest so nothing is cropped and nothing gets distorted.
-const BASE_FOV = 38, BASE_ASPECT = 4 / 3, MAX_FOV = 50, MAX_DISTANCE = 1.4;
+const BASE_FOV = 50, BASE_ASPECT = 4 / 3, MAX_FOV = 60, MAX_DISTANCE = 1.4;   // 50° = Blender hero cam (29mm lens, 4:3)
 const halfTan = (deg) => Math.tan(THREE.MathUtils.degToRad(deg / 2));
 let fitScale = 1;   // camera distance multiplier for the current aspect
 function fitCamera() {
