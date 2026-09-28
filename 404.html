@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Page not found · decryptology.net</title>
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.ico?v=2" sizes="32x32">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <!-- Caddy serves this page for other subdomains too (e.g. ci.), so every URL is absolute. -->
+  <link rel="icon" href="https://decryptology.net/favicon.ico?v=2" sizes="32x32">
+  <link rel="icon" href="https://decryptology.net/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="https://decryptology.net/apple-touch-icon.png">
   <meta name="theme-color" content="#07080d">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +19,8 @@
       font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
     body { overflow: hidden; }
     /* the scene's wall: gilded osmanthus and swallows on indigo silk, lit by the moon */
-    .wall { position: fixed; inset: 0; background: url("/404-wall-800.jpg") 70% center / cover no-repeat; }
-    @media (min-width: 701px) { .wall { background-image: url("/404-wall.jpg"); background-position: center; } }
+    .wall { position: fixed; inset: 0; background: url("https://decryptology.net/404-wall-800.jpg") 70% center / cover no-repeat; }
+    @media (min-width: 701px) { .wall { background-image: url("https://decryptology.net/404-wall.jpg"); background-position: center; } }
     .wall::after { content: ""; position: absolute; inset: 0;
       background: radial-gradient(circle at 50% 42%, rgba(255, 214, 150, 0.16) 0, transparent 32%),
                   radial-gradient(ellipse at center, transparent 30%, rgba(4, 5, 10, 0.78) 100%); }
@@ -86,7 +87,7 @@
       <h1>Oops! Page not found!</h1>
       <p>This page wandered off under the moon.</p>
       <div class="actions">
-        <a class="home" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5"/></svg>home</a>
+        <a class="home" href="https://decryptology.net/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5"/></svg>home</a>
         <a class="mail" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;%64%65%63%72%79%70%74%40%64%65%63%72%79%70%74%6F%6C%6F%67%79%2E%6E%65%74"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Mail Me</a>
       </div>
     </div>
