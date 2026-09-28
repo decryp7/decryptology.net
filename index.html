@@ -58,7 +58,7 @@
     #retry3d { display: none; }
     body.still #retry3d { display: inline-flex; margin-left: 0; pointer-events: auto; background: var(--panel);
       color: var(--muted); border: 1px solid #ffffff22; border-radius: 999px; padding: 6px 12px; font: inherit;
-      font-size: 12px; cursor: pointer; backdrop-filter: blur(8px); }
+      font-size: 12px; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     #loading { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center;
       background: rgba(7, 8, 13, 0.45); transition: opacity .6s ease; text-shadow: 0 1px 3px #000; }
     #loading.done { opacity: 0; pointer-events: none; }
@@ -68,7 +68,7 @@
     #hud { position: fixed; left: 16px; bottom: 16px; right: 16px; display: flex; gap: 12px; align-items: center;
       pointer-events: none; }
     #views { pointer-events: auto; display: flex; gap: 2px; padding: 3px; background: var(--panel);
-      border: 1px solid #ffffff22; border-radius: 999px; backdrop-filter: blur(8px); }
+      border: 1px solid #ffffff22; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     #views button { display: inline-flex; align-items: center; gap: 6px; background: none; color: var(--muted);
       border: 0; border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
     #views button:hover, #views button:focus-visible { color: var(--ink); background: #ffffff12; }
@@ -83,14 +83,14 @@
       max-width: calc(100% - 220px); }
     #links a { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); text-decoration: none;
       background: var(--panel); border: 1px solid #ffffff22; border-radius: 999px; padding: 6px 12px; font-size: 13px;
-      backdrop-filter: blur(8px); white-space: nowrap; }
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); white-space: nowrap; }
     #links a:hover, #links a:focus-visible { border-color: #e2b35c; }
     #links a.cta { background: #e2b35c; color: #1a1206; border-color: #e2b35c; font-weight: 600; }
     #links a.cta:hover, #links a.cta:focus-visible { background: #f0c778; }
     #links svg { width: 14px; height: 14px; flex: none; }
     #links .ext { opacity: .55; font-size: 11px; margin-left: -2px; }
     #meta { position: fixed; top: 16px; left: 16px; display: flex; gap: 10px; font-size: 12px;
-      background: var(--panel); padding: 6px 10px; border-radius: 8px; backdrop-filter: blur(8px); }
+      background: var(--panel); padding: 6px 10px; border-radius: 8px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     #meta a { color: var(--muted); text-decoration: none; }
     #meta a:hover, #meta a:focus-visible { color: var(--ink); text-decoration: underline; }
     #menu-btn { display: none; }
@@ -103,13 +103,13 @@
       #views svg { width: 18px; height: 18px; }
       #menu-btn { display: inline-flex; align-items: center; gap: 6px; position: fixed; right: 12px;
         top: max(12px, env(safe-area-inset-top)); background: var(--panel); color: var(--ink); border: 1px solid #ffffff22;
-        border-radius: 999px; padding: 7px 13px; font: inherit; font-size: 13px; cursor: pointer; backdrop-filter: blur(8px); }
+        border-radius: 999px; padding: 7px 13px; font: inherit; font-size: 13px; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
       #nav.open #menu-btn { border-color: #e2b35c; }
       #panel { display: none; position: fixed; right: 12px; top: calc(max(12px, env(safe-area-inset-top)) + 44px);
         width: min(260px, calc(100% - 24px)); box-sizing: border-box; padding: 8px; border-radius: 14px;
-        background: rgba(12, 14, 22, 0.9); border: 1px solid #ffffff22; backdrop-filter: blur(12px); }
+        background: rgba(12, 14, 22, 0.9); border: 1px solid #ffffff22; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
       #nav.open #panel { display: block; }
-      #links, #meta { position: static; max-width: none; background: none; backdrop-filter: none; padding: 0; }
+      #links, #meta { position: static; max-width: none; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; }
       #links { flex-direction: column; gap: 2px; }
       #links a { border: 0; background: none; border-radius: 8px; padding: 10px 10px; font-size: 15px; gap: 10px; }
       #links a:hover, #links a:focus-visible { background: #ffffff12; }
@@ -177,7 +177,12 @@
   <script type="module">
     // Start the 3D scene only once the page (still photo, links) has painted and finished loading, so the
     // page itself is fast; the scene fades in over the photo a moment later.
-    const start = () => import('./main.js?v=202609290658').catch((e) => console.warn(e));
+    const start = () => import('./main.js?v=202609290658').catch((e) => {
+      // e.g. no import-map support (iOS < 16.4): keep the still photo instead of an endless "Loading…"
+      console.warn('3D scene unavailable, showing the still photo:', e);
+      document.body.classList.add('still');
+      document.getElementById('loading').classList.add('done');
+    });
     const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
     if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
   </script>
