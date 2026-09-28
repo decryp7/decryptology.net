@@ -100,6 +100,7 @@ let tween = null;
 function flyTo(name, ms = 1100) {
   const view = VIEWS[name];
   if (!view) return;
+  document.querySelectorAll('#views button').forEach((b) => b.classList.toggle('active', b.dataset.view === name));
   const v = { target: view.target, pos: view.pos.clone().sub(view.target).multiplyScalar(fitScale).add(view.target) };
   if (ms === 0) {
     camera.position.copy(v.pos);
@@ -119,7 +120,15 @@ function stepTween(now) {
   if (k === 1) tween = null;
 }
 
-document.querySelectorAll('#hud button').forEach((b) => b.addEventListener('click', () => flyTo(b.dataset.view)));
+document.querySelectorAll('#views button').forEach((b) => b.addEventListener('click', () => flyTo(b.dataset.view)));
+
+// Free orbiting leaves the preset views; the hint fades once someone has started exploring.
+const hint = document.getElementById('hint');
+controls.addEventListener('start', () => {
+  document.querySelectorAll('#views button.active').forEach((b) => b.classList.remove('active'));
+  hint.classList.add('gone');
+});
+setTimeout(() => hint.classList.add('gone'), 12000);
 
 const ray = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
