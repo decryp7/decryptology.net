@@ -6,6 +6,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
 // three.js adds only what changes with the viewpoint: reflections from env.hdr, captured in the same room.
@@ -47,7 +48,7 @@ controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
 // Blender (x, y, z) -> three (x, z, -y)
 const b2t = (x, y, z) => new THREE.Vector3(x, z, -y);
 const VIEWS = {
-  hero: { pos: b2t(0.05, -0.34, 1.22), target: b2t(0.07, 0.1, 0.81) },
+  hero: { pos: b2t(0.0, -0.71, 1.11), target: b2t(0.03, 0.06, 0.95) },   // = HERO_CAM in build_scene.py
 };
 
 const composer = new EffectComposer(renderer);
@@ -55,19 +56,36 @@ composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.35, 0.6, 0.92);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
+// Photographic finish: a gentle lens vignette and fine, moving film grain (after tone mapping, in display space).
+const lens = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, aspect: { value: 1 } },
+  vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform float time; uniform float aspect; varying vec2 vUv;
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      vec2 d = (vUv - 0.5) * vec2(aspect, 1.0);
+      c.rgb *= mix(1.0, 0.72, smoothstep(0.35, 0.95, length(d)));           // vignette
+      float g = hash(vUv * 1000.0 + fract(time) * 100.0) - 0.5;
+      c.rgb += g * 0.025 * (1.0 - c.rgb);                                   // grain, strongest in shadows
+      gl_FragColor = c;
+    }`,
+});
+composer.addPass(lens);
 
 const manager = new THREE.LoadingManager();
 const bar = document.querySelector('#bar > i');
 manager.onProgress = (_url, loaded, total) => { bar.style.width = `${(loaded / total) * 100}%`; };
 manager.onLoad = () => document.getElementById('loading').classList.add('done');
 
-new RGBELoader(manager).load('env.hdr', (hdr) => {
+new RGBELoader(manager).load('env.hdr?v=202609290025', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
 });
 
 const clickable = [];
-new GLTFLoader(manager).load('scene.glb', (gltf) => {
+new GLTFLoader(manager).load('scene.glb?v=202609290025', (gltf) => {
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;
@@ -90,7 +108,7 @@ new GLTFLoader(manager).load('scene.glb', (gltf) => {
     return { target: c, pos: c.clone().add(dir.normalize().multiplyScalar(dist)) };
   };
   VIEWS.cake = frame('Mooncake', new THREE.Vector3(0.15, 0.55, 1), 0.24);
-  VIEWS.poster = frame('Poster_Art', new THREE.Vector3(0.05, 0.12, 1), 0.5);
+  VIEWS.poster = frame('Poster_Art', new THREE.Vector3(0.05, 0.12, 1), 0.95);
   VIEWS.box = frame('GiftBox', new THREE.Vector3(0.1, 1.6, 1), 0.36);
   flyTo('hero', 0);
 });
@@ -154,6 +172,8 @@ window.addEventListener('resize', () => {
 });
 
 renderer.setAnimationLoop((now) => {
+  lens.uniforms.time.value = now / 1000;
+  lens.uniforms.aspect.value = window.innerWidth / window.innerHeight;
   stepTween(now);
   controls.update();
   composer.render();
