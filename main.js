@@ -22,22 +22,26 @@ scene.background = new THREE.Color(0x07080d);
 
 const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.01, 20);
 
-// Views are framed for 4:3. On narrower screens widen the vertical FOV so the horizontal
-// field stays the same and the sides of the scene aren't cropped (capped to limit distortion).
-const BASE_FOV = 38, BASE_ASPECT = 4 / 3, MAX_FOV = 80;
+// Views are framed for 4:3. On narrower screens keep the same horizontal field: widen the FOV a
+// little, then pull the camera back for the rest so nothing is cropped and nothing gets distorted.
+const BASE_FOV = 38, BASE_ASPECT = 4 / 3, MAX_FOV = 50, MAX_DISTANCE = 1.4;
+const halfTan = (deg) => Math.tan(THREE.MathUtils.degToRad(deg / 2));
+let fitScale = 1;   // camera distance multiplier for the current aspect
 function fitCamera() {
   const aspect = window.innerWidth / window.innerHeight;
+  const wantTan = halfTan(BASE_FOV) * Math.max(1, BASE_ASPECT / aspect);   // vertical half-tan that keeps the width
   camera.aspect = aspect;
-  camera.fov = aspect >= BASE_ASPECT ? BASE_FOV
-    : Math.min(MAX_FOV, THREE.MathUtils.radToDeg(
-        2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(BASE_FOV / 2)) * BASE_ASPECT / aspect)));
+  camera.fov = Math.min(MAX_FOV, THREE.MathUtils.radToDeg(2 * Math.atan(wantTan)));
   camera.updateProjectionMatrix();
+  const prev = fitScale;
+  fitScale = wantTan / halfTan(camera.fov);
+  return fitScale / prev;
 }
 fitCamera();
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.minDistance = 0.12;
-controls.maxDistance = 1.4;
+controls.maxDistance = MAX_DISTANCE * fitScale;
 controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
 
 // Blender (x, y, z) -> three (x, z, -y)
@@ -94,8 +98,9 @@ new GLTFLoader(manager).load('scene.glb', (gltf) => {
 // ---------------------------------------------------------------- camera moves
 let tween = null;
 function flyTo(name, ms = 1100) {
-  const v = VIEWS[name];
-  if (!v) return;
+  const view = VIEWS[name];
+  if (!view) return;
+  const v = { target: view.target, pos: view.pos.clone().sub(view.target).multiplyScalar(fitScale).add(view.target) };
   if (ms === 0) {
     camera.position.copy(v.pos);
     controls.target.copy(v.target);
@@ -131,7 +136,10 @@ renderer.domElement.addEventListener('pointerup', (e) => {
 });
 
 window.addEventListener('resize', () => {
-  fitCamera();
+  const k = fitCamera();
+  controls.maxDistance = MAX_DISTANCE * fitScale;
+  if (tween) tween.v.pos.sub(tween.v.target).multiplyScalar(k).add(tween.v.target);
+  camera.position.sub(controls.target).multiplyScalar(k).add(controls.target);
   renderer.setSize(window.innerWidth, window.innerHeight);
   composer.setSize(window.innerWidth, window.innerHeight);
 });
