@@ -164,6 +164,46 @@
     #rail a:hover span, #rail a:focus-visible span, #rail a.on span { opacity: 1; transform: none; }
     @media (max-width: 760px) { #rail { right: 6px; height: 150px; } #rail a span { display: none; } }
     #retry3d { display: none; }
+    @media print {
+      @page { size: A4; margin: 14mm 14mm 16mm; }
+      html, body { background: #fff !important; color: #1b2233; overflow: visible; }
+      canvas, #still, #loading, #hud, #nav, #rail, #credit, #hero, #toast, .contact .actions, #cue { display: none !important; }
+      #career { padding: 0; background: #fff !important; box-shadow: none; color: #1b2233; }
+      #career::before { display: none; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .eyebrow, .entry .when { color: #8a6326; }
+      .intro { margin-bottom: 6mm; text-align: left; }
+      .intro p { margin: 0; max-width: none; font-size: 10pt; line-height: 1.55; }
+      .intro h2 { font-size: 30pt; margin: 2mm 0 1mm; }
+      .highlights { grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+      .highlights li { padding: 3mm; font-size: 8.5pt; }
+      .highlights strong { font-size: 16pt; }
+      .entry h3 { font-size: 15pt; margin-top: 1mm; }
+      .entry p, .entry ul { font-size: 9.5pt; line-height: 1.5; margin-top: 1.5mm; }
+      .entry li { margin-top: 1mm; }
+      .creds { grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 2mm; }
+      .creds section { padding: 3mm 4mm; }
+      .creds ul { font-size: 9pt; }
+      .intro h2, .entry h3, .contact h4 { color: #16213d; }
+      .intro .role, .entry .org { color: #6b5226; }
+      .intro p, .entry p, .entry ul, .highlights li, .creds ul { color: #2c3346; }
+      .intro .where, .entry .place, .creds small { color: #5d6475; }
+      .flourish { display: none; }
+      .highlights { margin-top: 5mm; }
+      .highlights li, .creds section { background: #fff; border-color: #e7d3ab; break-inside: avoid; }
+      .highlights strong { color: #16213d; }
+      .timeline::before { left: 4px; background: #d8bf8c; }
+      .entry, .entry:nth-child(odd), .entry:nth-child(even) { width: 100%; left: 0; text-align: left; padding: 0 0 4mm 22px; break-inside: avoid; }
+      .entry::after, .entry:nth-child(odd)::after, .entry:nth-child(even)::after { left: 0; right: auto; box-shadow: 0 0 0 3px #fff; }
+      .entry:nth-child(odd) li { padding-right: 0; padding-left: 14px; }
+      .entry:nth-child(odd) li::after { display: none; }
+      .entry li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 6px; height: 1px; background: #b8873a; }
+      .entry .tags { display: none; }
+      .contact { margin-top: 8mm; text-align: left; }
+      .contact h4 { font-size: 16pt; margin: 2mm 0; }
+      .colophon { margin-top: 4mm; text-align: left; color: #6b6f7a; }
+      a { color: inherit; text-decoration: none; }
+    }
     body.still #retry3d { display: inline-flex; margin-left: 0; pointer-events: auto; background: var(--panel);
       color: var(--muted); border: 1px solid #ffffff22; border-radius: 999px; padding: 6px 12px; font: inherit;
       font-size: 12px; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -250,7 +290,7 @@
     <button id="menu-btn" aria-expanded="false" aria-controls="panel"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Links</button>
     <div id="panel">
       <div id="links">
-        <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae<span class="ext" aria-hidden="true">↗</span></a>
+        <a href="cv.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae<span class="ext" aria-hidden="true">↗</span></a>
         <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>LinkedIn<span class="ext" aria-hidden="true">↗</span></a>
         <a href="https://dev.decryptology.net/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>Development<span class="ext" aria-hidden="true">↗</span></a>
         <a href="https://s3.decryptology.net/shared/artwork.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8-.4-1.2.5-2.2 1.6-2.2H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>Artwork<span class="ext" aria-hidden="true">↗</span></a>
@@ -364,7 +404,7 @@
       <div class="actions">
         <a class="cta" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#99;&#114;&#121;&#112;&#116;&#64;&#100;&#101;&#99;&#114;&#121;&#112;&#116;&#111;&#108;&#111;&#103;&#121;&#46;&#110;&#101;&#116;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Mail Me</a>
         <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>LinkedIn</a>
-        <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae</a>
+        <a href="cv.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae</a>
       </div>
       <p class="colophon">© 2026 Kok Yong Teo · decryptology.net · <em>Artwork by Hannah</em></p>
     </section>
