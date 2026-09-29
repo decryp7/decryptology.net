@@ -9,8 +9,8 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
-import { Ladybug } from './ladybug.js?v=202609291024';
-import { Steam } from './steam.js?v=202609291024';
+import { Ladybug } from './ladybug.js?v=202609291143';
+import { Steam } from './steam.js?v=202609291143';
 
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
 // three.js adds only what changes with the viewpoint: reflections from env.hdr, captured in the same room.
@@ -191,14 +191,14 @@ manager.onLoad = () => {
   if (!document.body.classList.contains('still')) renderer.domElement.style.opacity = '1';
 };
 
-new RGBELoader(manager).load('env.hdr?v=202609291024', (hdr) => {
+new RGBELoader(manager).load('env.hdr?v=202609291143', (hdr) => {
   hdr.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdr;
 }, undefined, (e) => console.warn('No reflections (env.hdr failed):', e));
 
 const clickable = [];
 const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
-new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' : 'scene.glb') + '?v=202609291024', (gltf) => {
+new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' : 'scene.glb') + '?v=202609291143', (gltf) => {
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;

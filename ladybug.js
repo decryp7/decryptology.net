@@ -46,6 +46,10 @@ export class Ladybug {
       this.legs.push(o);
     });
     this.gait = 0; this.stepping = 0; this.nextGroom = 0;
+    this.lensLight = 0;
+    this.mats = [];
+    this.obj.traverse((o) => { if (o.isMesh && o.material && !this.mats.includes(o.material)) this.mats.push(o.material); });
+    this.mats.forEach((m) => { m.userData.baseEmissive = m.emissiveIntensity ?? 1; });
     this.nextWander = Infinity;
     this.ray = new THREE.Raycaster();
     this.tmpM = new THREE.Matrix4();
@@ -506,6 +510,9 @@ export class Ladybug {
     }
     this.wingOpen += (wingTarget - this.wingOpen) * (1 - Math.exp(-dt * 10));
     this.setWings(this.wingOpen, now);
+    // on the glass the ladybug is lit from our side (light through the lens), so its belly and legs read
+    this.lensLight += ((ph.type === 'crawl' ? 1 : 0) - this.lensLight) * (1 - Math.exp(-dt * 4));
+    for (const m of this.mats) if (m.emissiveIntensity !== undefined) m.emissiveIntensity = m.userData.baseEmissive * (1 + 2.2 * this.lensLight);
     const walkTarget = ph.type === 'crawl' ? 1 : ph.type === 'rest' && ph.turn ? 0.5 : 0;
     this.stepping += (walkTarget - this.stepping) * (1 - Math.exp(-dt * 8));
     this.poseLegs(dt, now, this.wingOpen, this.stepping);
