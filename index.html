@@ -403,7 +403,7 @@
   <script type="module">
     // Start the 3D scene only once the page (still photo, links) has painted and finished loading, so the
     // page itself is fast; the scene fades in over the photo a moment later.
-    const start = () => import('./main.js?v=202609290825').catch((e) => {
+    const start = () => import('./main.js?v=202609290838').catch((e) => {
       // e.g. no import-map support (iOS < 16.4): keep the still photo instead of an endless "Loading…"
       console.warn('3D scene unavailable, showing the still photo:', e);
       document.body.classList.add('still');

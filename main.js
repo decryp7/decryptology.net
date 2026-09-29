@@ -19,6 +19,11 @@ import { Steam } from './steam.js?v=202609290825';
 let renderer;
 function showStill(reason) {
   console.warn('3D scene unavailable, showing the still photo:', reason);
+  const why = String(reason && reason.message || reason);
+  document.body.dataset.stillReason = why;
+  const retry = document.getElementById('retry3d');
+  if (retry) retry.title = 'Showing a photo: ' + why;
+  if (new URLSearchParams(location.search).has('debug') && retry) retry.textContent = 'Try 3D view — ' + why;
   document.body.classList.add('still');
   document.getElementById('loading').classList.add('done');
   if (renderer) renderer.domElement.style.display = 'none';   // three.js sets an inline display: block
@@ -30,12 +35,18 @@ const MOBILE = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod|Andr
   || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 // Crash guard: a flag set while the 3D view runs, cleared when the page is left normally. If the tab crashed,
 // the flag survives the automatic reload, so show the still photo instead of crashing again.
+// The flag only counts while the page is on screen: iOS silently discards background tabs (not a crash), so it is
+// cleared whenever the page is hidden, and a flag older than two minutes is ignored.
 const CRASH_FLAG = 'scene3d-running';
 let crashedBefore = false;
 try {
-  crashedBefore = sessionStorage.getItem(CRASH_FLAG) === '1';
-  sessionStorage.setItem(CRASH_FLAG, '1');
-  addEventListener('pagehide', () => sessionStorage.removeItem(CRASH_FLAG));
+  const t = Number(sessionStorage.getItem(CRASH_FLAG));
+  crashedBefore = t > 0 && Date.now() - t < 120000;
+  const mark = () => sessionStorage.setItem(CRASH_FLAG, String(Date.now()));
+  const clear = () => sessionStorage.removeItem(CRASH_FLAG);
+  mark();
+  addEventListener('pagehide', clear);
+  document.addEventListener('visibilitychange', () => (document.hidden ? clear() : mark()));
 } catch { /* storage unavailable: no guard */ }
 document.getElementById('retry3d')?.addEventListener('click', () => {
   try { sessionStorage.removeItem(CRASH_FLAG); } catch {}
@@ -57,7 +68,17 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.NeutralToneMapping;   // same curve as Blender's "Khronos PBR Neutral"
 renderer.toneMappingExposure = 1.0;
 document.body.appendChild(renderer.domElement);
-renderer.domElement.addEventListener('webglcontextlost', () => showStill('WebGL context lost'));
+// iOS may take the GPU context away (e.g. while Safari is in the background) and hand it back; only give up if
+// it isn't restored within a few seconds of the page being visible again.
+let contextTimer = null;
+renderer.domElement.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();                                           // ask for it back
+  const check = () => { contextTimer = setTimeout(() => showStill('WebGL context lost and not restored'), 4000); };
+  if (document.hidden) document.addEventListener('visibilitychange', function once() {
+    if (!document.hidden) { document.removeEventListener('visibilitychange', once); check(); } });
+  else check();
+});
+renderer.domElement.addEventListener('webglcontextrestored', () => { clearTimeout(contextTimer); contextTimer = null; });
 // Software WebGL (no GPU: SwiftShader, llvmpipe...) takes seconds per frame for this scene and freezes the page,
 // e.g. in PageSpeed's test machines. Keep the still photo there. (?3d forces the 3D view, for testing.)
 const FORCE_3D = new URLSearchParams(location.search).has('3d');
@@ -283,13 +304,15 @@ window.addEventListener('resize', () => {
 // Watchdog: once the scene is in, time the first frames; if the device can't keep up (typical frame > 0.4 s),
 // stop the 3D view before it freezes the page and keep the still photo.
 let frameTimes = null, lastFrame = 0;
-manager.onLoad = ((onLoad) => () => { onLoad(); frameTimes = []; })(manager.onLoad);
+let warmup = 0;
+manager.onLoad = ((onLoad) => () => { onLoad(); frameTimes = []; warmup = 45; })(manager.onLoad);
 
 renderer.setAnimationLoop((now) => {
-  if (frameTimes && !FORCE_3D) {
-    if (lastFrame) frameTimes.push(now - lastFrame);
-    if (frameTimes.length >= 20) {
-      const typical = [...frameTimes].sort((a, b) => a - b)[10];
+  if (frameTimes && !FORCE_3D && sceneVisible && !document.hidden) {
+    if (warmup > 0) warmup--;                                   // first frames compile shaders / upload textures
+    else if (lastFrame) frameTimes.push(now - lastFrame);
+    if (frameTimes.length >= 30) {
+      const typical = [...frameTimes].sort((a, b) => a - b)[15];
       frameTimes = null;
       if (typical > 400) {
         renderer.setAnimationLoop(null);
