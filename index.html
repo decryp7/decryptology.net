@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Mid-Autumn Moon · Artwork by Hannah | decryptology.net</title>
-  <meta name="description" content="An interactive Mid-Autumn still life of Hannah's artwork: her ladybug painting and handmade mooncake beneath a gilded, moonlit wall. Explore it in 3D and watch the ladybug fly from the painting to the mooncake and tea.">
+  <title>Kok Yong Teo · Generalist, Architect, Group Leader | decryptology.net</title>
+  <meta name="description" content="Kok Yong Teo leads the CENTUM VP control-system software group at Yokogawa in Singapore, building industrial software since 2005. Explore a Mid-Autumn still life of Hannah's artwork in 3D, then scroll through the career timeline.">
   <link rel="canonical" href="https://decryptology.net/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="decryptology.net">
   <meta property="og:url" content="https://decryptology.net/">
-  <meta property="og:title" content="Mid-Autumn Moon · Artwork by Hannah">
-  <meta property="og:description" content="An interactive Mid-Autumn still life of Hannah's artwork: her ladybug painting and handmade mooncake beneath a gilded, moonlit wall. Explore it in 3D and watch the ladybug fly from the painting to the mooncake and tea.">
+  <meta property="og:title" content="Kok Yong Teo · Generalist | Architect | Group Leader">
+  <meta property="og:description" content="Kok Yong Teo leads the CENTUM VP control-system software group at Yokogawa in Singapore, building industrial software since 2005. Explore a Mid-Autumn still life of Hannah's artwork in 3D, then scroll through the career timeline.">
   <meta property="og:image" content="https://decryptology.net/og-image.jpg?v=2">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="627">
   <meta property="og:image:alt" content="Mid-Autumn still life: Hannah's ladybug painting above a tray of flowers, a mooncake on a blue-and-white plate, osmanthus tea, a lantern under the moon and a navy-and-gold gift box">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Mid-Autumn Moon · Artwork by Hannah">
-  <meta name="twitter:description" content="An interactive Mid-Autumn still life of Hannah's artwork: her ladybug painting and handmade mooncake beneath a gilded, moonlit wall. Explore it in 3D and watch the ladybug fly from the painting to the mooncake and tea.">
+  <meta name="twitter:title" content="Kok Yong Teo · Generalist | Architect | Group Leader">
+  <meta name="twitter:description" content="Kok Yong Teo leads the CENTUM VP control-system software group at Yokogawa in Singapore, building industrial software since 2005. Explore a Mid-Autumn still life of Hannah's artwork in 3D, then scroll through the career timeline.">
   <meta name="twitter:image" content="https://decryptology.net/og-image.jpg?v=2">
   <link rel="icon" href="favicon.ico?v=2" sizes="32x32">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -27,18 +27,20 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Pinyon+Script&display=swap">
   <meta name="theme-color" content="#07080d">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Kok Yong Teo", "url": "https://decryptology.net/", "jobTitle": "Group Leader, Senior Executive Engineer", "worksFor": {"@type": "Organization", "name": "Yokogawa"}, "address": {"@type": "PostalAddress", "addressLocality": "Singapore", "addressCountry": "SG"}, "sameAs": ["https://www.linkedin.com/in/decryp7", "https://dev.decryptology.net/decryp7"], "alumniOf": [{"@type": "CollegeOrUniversity", "name": "University of Wollongong"}, {"@type": "EducationalOrganization", "name": "Ngee Ann Polytechnic"}], "knowsLanguage": ["English", "Chinese"], "knowsAbout": ["Software architecture", "Distributed control systems", "Product requirements", "Code review", "SOLID design principles", "Secure development"], "hasCredential": {"@type": "EducationalOccupationalCredential", "name": "Certified ScrumMaster (CSM)"}}</script>
   <style>
     :root {
       --bg: #07080d;
       --ink: #f3e7cf;
       --muted: #b9a988;
       --panel: rgba(12, 14, 22, 0.62);
+      --gold: #e2b35c;
     }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden;
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); overflow-x: hidden;
       font: 14px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
-    canvas { display: block; position: relative; z-index: 1; }
+    canvas { display: block; position: fixed; inset: 0; z-index: 1; }
     /* Still photo of the scene: shown while the 3D view loads, and kept if it can't run. */
     #still { position: fixed; inset: 0; z-index: 0; }
     #still img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -55,6 +57,112 @@
       "Apple Chancery", cursive; background: linear-gradient(180deg, #fbe7b4 0%, #e2b35c 55%, #b07f33 100%);
       -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none;
       filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.75)); }
+
+    /* ---------------------------------------------------------------- career */
+    #hero { height: 100vh; height: 100svh; position: relative; pointer-events: none; }
+    #cue { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); z-index: 3; pointer-events: auto;
+      display: flex; flex-direction: column; align-items: center; gap: 6px; color: #cbb892; text-decoration: none;
+      font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase; text-shadow: 0 1px 10px #000; }
+    #cue svg { width: 18px; height: 18px; color: var(--gold); animation: cue 2.4s ease-in-out infinite; }
+    @keyframes cue { 0%, 100% { transform: translateY(0); opacity: .75; } 50% { transform: translateY(5px); opacity: 1; } }
+    #career { position: relative; z-index: 4; color: var(--ink); padding: 112px 20px 72px;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(226, 179, 92, 0.1), transparent 70%),
+        linear-gradient(180deg, rgba(8, 11, 24, 0.9) 0, rgba(8, 11, 24, 0.97) 240px, #080b18 100%),
+        url("404-wall.jpg") center top / 1600px auto repeat-y;
+      box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.6); }
+    #career::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent); opacity: .55; }
+    .serif { font-family: "Cormorant Garamond", "Iowan Old Style", Palatino, Georgia, serif; }
+    .eyebrow { font-size: 10.5px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--gold); }
+    .intro { max-width: 760px; margin: 0 auto 84px; text-align: center; }
+    .intro h2 { margin: 14px 0 6px; font: 500 clamp(40px, 7vw, 64px)/1.05 "Cormorant Garamond", Georgia, serif; letter-spacing: 0.01em; }
+    .intro .role { font: italic 500 clamp(18px, 2.6vw, 22px)/1.3 "Cormorant Garamond", Georgia, serif; color: #e9d7b0; }
+    .intro .where { margin-top: 6px; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .flourish { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 26px auto; color: var(--gold); }
+    .flourish::before, .flourish::after { content: ""; width: 72px; height: 1px; background: linear-gradient(90deg, transparent, currentColor); }
+    .flourish::after { transform: scaleX(-1); }
+    .flourish svg { width: 18px; height: 18px; }
+    .intro p { margin: 0 auto; max-width: 640px; color: #d8cbb2; font-size: 15.5px; line-height: 1.75; }
+    .highlights { list-style: none; padding: 0; margin: 34px auto 0; max-width: 820px; display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .highlights li { padding: 16px 16px 14px; border: 1px solid #e2b35c33; border-radius: 12px; background: rgba(226, 179, 92, 0.04);
+      text-align: left; font-size: 13px; line-height: 1.5; color: #d8cbb2; }
+    .highlights strong { display: block; margin-bottom: 4px; font: 600 26px/1 "Cormorant Garamond", Georgia, serif; color: #f3dca6; }
+    /* the timeline */
+    .timeline { position: relative; max-width: 1040px; margin: 0 auto; padding: 8px 0; list-style: none; }
+    .timeline::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; transform: translateX(-0.5px);
+      background: linear-gradient(180deg, transparent, #e2b35c 6%, #e2b35c 94%, transparent); opacity: .6; }
+    .entry { position: relative; width: 50%; box-sizing: border-box; padding: 0 44px 56px; }
+    .entry:nth-child(odd) { left: 0; text-align: right; }
+    .entry:nth-child(even) { left: 50%; }
+    .entry::after { content: ""; position: absolute; top: 7px; width: 11px; height: 11px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fbe3a8, #c8903c); box-shadow: 0 0 0 4px #080b18, 0 0 18px rgba(226, 179, 92, .55); }
+    .entry:nth-child(odd)::after { right: -5.5px; }
+    .entry:nth-child(even)::after { left: -5.5px; }
+    .entry.edu::after { background: #080b18; border: 1.5px solid #e2b35c; width: 9px; height: 9px; box-shadow: 0 0 0 4px #080b18; }
+    .entry .when { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); }
+    .entry h3 { margin: 8px 0 2px; font: 600 clamp(24px, 3vw, 30px)/1.15 "Cormorant Garamond", Georgia, serif; color: #f6ead0; }
+    .entry .org { font: italic 500 18px/1.3 "Cormorant Garamond", Georgia, serif; color: #e2c98f; }
+    .entry .place { margin-left: 6px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-style: normal; font-family: ui-sans-serif, system-ui, sans-serif; }
+    .entry p { margin: 12px 0 0; color: #cfc2a8; font-size: 14.5px; line-height: 1.7; }
+    .entry ul { margin: 12px 0 0; padding: 0; list-style: none; color: #cfc2a8; font-size: 14.5px; line-height: 1.65; }
+    .entry li { position: relative; margin-top: 7px; }
+    .entry:nth-child(even) li { padding-left: 16px; }
+    .entry:nth-child(even) li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 6px; height: 1px; background: var(--gold); }
+    .entry:nth-child(odd) li { padding-right: 16px; }
+    .entry:nth-child(odd) li::after { content: ""; position: absolute; right: 0; top: 0.72em; width: 6px; height: 1px; background: var(--gold); }
+    .entry .tags { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .entry:nth-child(odd) .tags { justify-content: flex-end; }
+    .entry .tags span { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid #e2b35c40; color: #e2c98f; }
+    /* credentials and contact */
+    .creds { max-width: 1040px; margin: 30px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .creds section { padding: 22px 22px 20px; border: 1px solid #ffffff14; border-radius: 14px; background: rgba(255, 255, 255, 0.025); }
+    .creds h4 { margin: 0 0 12px; }
+    .creds ul { margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.6; color: #d8cbb2; }
+    .creds li + li { margin-top: 8px; }
+    .creds small { display: block; color: var(--muted); font-size: 12px; }
+    .contact { margin: 76px auto 0; text-align: center; }
+    .contact h4 { margin: 12px 0 22px; font: 500 clamp(28px, 4vw, 38px)/1.2 "Cormorant Garamond", Georgia, serif; color: #f6ead0; }
+    .contact .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .contact .actions a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; text-decoration: none;
+      font-size: 14px; color: var(--ink); border: 1px solid #ffffff26; background: rgba(12, 14, 22, 0.6); }
+    .contact .actions a:hover, .contact .actions a:focus-visible { border-color: var(--gold); }
+    .contact .actions a.cta { background: var(--gold); color: #1a1206; border-color: var(--gold); font-weight: 600; }
+    .contact .actions svg { width: 16px; height: 16px; }
+    .colophon { margin-top: 64px; text-align: center; font-size: 12px; color: #8f8470; }
+    .colophon em { font: italic 500 15px "Cormorant Garamond", Georgia, serif; color: #cbb892; }
+    /* gentle reveal as entries scroll in */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1); }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } #cue svg { animation: none; } }
+    @media (max-width: 760px) {
+      #career { padding: 88px 28px 56px 18px; }
+      .timeline::before { left: 7px; }
+      .entry, .entry:nth-child(odd), .entry:nth-child(even) { width: 100%; left: 0; text-align: left; padding: 0 0 44px 34px; }
+      .entry:nth-child(odd)::after, .entry:nth-child(even)::after { left: 2px; right: auto; }
+      .entry.edu::after { left: 3px; }
+      .entry:nth-child(odd) li { padding-right: 0; padding-left: 16px; }
+      .entry:nth-child(odd) li::after { display: none; }
+      .entry:nth-child(odd) li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 6px; height: 1px; background: var(--gold); }
+      .entry:nth-child(odd) .tags { justify-content: flex-start; }
+      #cue { bottom: 150px; }
+    }
+    /* chapter rail: a fine gold line on the right with a little moon that travels as you scroll */
+    #rail { position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 6; height: 200px; width: 14px; }
+    #rail .line { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-0.5px);
+      background: linear-gradient(180deg, transparent, #e2b35c99 12%, #e2b35c99 88%, transparent); }
+    #rail .moon { position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #fff8e6, #f1d9a4 55%, #c99a4c); box-shadow: 0 0 10px 2px rgba(255, 215, 150, .55);
+      transition: top .12s linear; }
+    #rail a { position: absolute; left: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; display: grid; place-items: center;
+      text-decoration: none; }
+    #rail a::before { content: ""; width: 5px; height: 5px; border-radius: 50%; border: 1px solid #e2b35c; background: #080b18; }
+    #rail a.on::before { background: #e2b35c; }
+    #rail a span { position: absolute; right: 22px; white-space: nowrap; font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: #e9d7b0; text-shadow: 0 1px 8px #000; opacity: 0; transform: translateX(4px); transition: opacity .3s, transform .3s; pointer-events: none; }
+    #rail a:hover span, #rail a:focus-visible span, #rail a.on span { opacity: 1; transform: none; }
+    @media (max-width: 760px) { #rail { right: 6px; height: 150px; } #rail a span { display: none; } }
     #retry3d { display: none; }
     body.still #retry3d { display: inline-flex; margin-left: 0; pointer-events: auto; background: var(--panel);
       color: var(--muted); border: 1px solid #ffffff22; border-radius: 999px; padding: 6px 12px; font: inherit;
@@ -64,7 +172,8 @@
     #loading.done { opacity: 0; pointer-events: none; }
     #bar { width: 220px; height: 2px; background: #222; margin-top: 12px; }
     #bar > i { display: block; height: 100%; width: 0; background: #e2b35c; transition: width .2s; }
-    #hud, #nav { position: relative; z-index: 3; }
+    #hud { position: relative; z-index: 3; }
+    #nav { position: relative; z-index: 6; }
     #hud { position: fixed; left: 16px; bottom: 16px; right: 16px; display: flex; gap: 12px; align-items: center;
       pointer-events: none; }
     #views { pointer-events: auto; display: flex; gap: 2px; padding: 3px; background: var(--panel);
@@ -170,8 +279,121 @@
       <button data-view="box" aria-label="Gift box" title="Gift box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.5S10 8 12 8zM12 8c1.5-3 5-3.5 5-1.5S14 8 12 8z"/></svg><span>Gift box</span></button>
     </div>
     <button id="retry3d" type="button">Try 3D view</button>
-    <span id="hint"><span class="mouse">Drag to orbit · scroll to zoom · click an object to fly to it</span><span class="touch">Drag to orbit · pinch to zoom · tap an object</span></span>
+    <span id="hint"><span class="mouse">Drag to look around · pinch or ctrl-scroll to zoom · scroll for career</span><span class="touch">Swipe sideways to look around · scroll for career</span></span>
   </div>
+  <nav id="rail" aria-label="Sections">
+    <div class="line"></div>
+    <a href="#hero" data-at="0" style="top: 0%"><span>Scene</span></a>
+    <a href="#career" data-at="career" style="top: 50%"><span>Career</span></a>
+    <a href="#contact" data-at="contact" style="top: 100%"><span>Contact</span></a>
+    <div class="moon"></div>
+  </nav>
+  <div id="hero">
+    <a id="cue" href="#career"><span>Career</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+  </div>
+  <main id="career" aria-labelledby="career-name">
+    <header class="intro reveal">
+      <div class="eyebrow">Career</div>
+      <h2 id="career-name">Kok Yong Teo</h2>
+      <div class="role">Generalist · Architect · Group Leader</div>
+      <div class="where">Control system software · Yokogawa · Singapore</div>
+      <div class="flourish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+      <p>Leading the CENTUM VP Group at Yokogawa Engineering Asia's Singapore Development Centre — architecture direction, requirements and design governance, delivery planning and the coordination of engineering teams in Singapore, Japan, Vietnam and India. Focused on software architecture, structured technical decision analysis, multi-site delivery, secure development practice and growing engineering capability.</p>
+      <ul class="highlights">
+        <li class="reveal"><strong>10,000</strong>alarm messages rendered per second</li>
+        <li class="reveal"><strong>4</strong>development centres on the Automation Design Organizer framework</li>
+        <li class="reveal"><strong>64-bit</strong>two-process modernisation of a legacy OPC product</li>
+        <li class="reveal"><strong>2005</strong>building software since, nearly 17 years at Yokogawa</li>
+      </ul>
+    </header>
+    <ol class="timeline" aria-label="Career timeline">
+      <li class="entry reveal ">
+        <div class="when">December 2009 — Present</div>
+        <h3>Group Leader, Senior Executive Engineer</h3>
+        <div class="org">Yokogawa<span class="place">Singapore</span></div>
+        <p>Joined Yokogawa to develop CENTUM VP, the company's distributed control system, and progressed through team leader and architect appointments to lead the CENTUM VP Group at the Singapore Development Centre.</p>
+        <ul><li>Accountable for product development and maintenance across CENTUM VP subsystems — Graphic, Batch, UACS, UGS, Trend, Exaopc UA and CI Server — directing engineers, subcontractors and offshore partners in Singapore, Japan, Vietnam and India.</li><li>Engineered an alarm interface that renders ten thousand messages per second.</li><li>Delivered a .NET framework migration with full compatibility across earlier product revisions and every supported operating system.</li><li>Built the framework APIs underpinning Automation Design Organizer, adopted across four development centres.</li><li>Led the feasibility study that modernised a legacy OPC product into a 64-bit, two-process architecture, evaluating four inter-process communication approaches.</li><li>Owns delivery planning and product quality — specifications, design, code and test reviews, integration test classification and build gates.</li><li>Establishing secure development practice across the group ahead of the EU Cyber Resilience Act.</li></ul>
+        <div class="tags"><span>Software architecture</span><span>Multi-site delivery</span><span>Secure development</span></div>
+      </li>
+      <li class="entry reveal ">
+        <div class="when">July — December 2009</div>
+        <h3>Software Engineer</h3>
+        <div class="org">Agathos Solutions<span class="place">Singapore</span></div>
+        <p>Web-based customer self-help software (iSupport).</p>
+        <ul><li>Conducted technical investigation and a survey of existing market solutions.</li><li>Undertook requirements gathering, prototyping and design.</li></ul>
+      </li>
+      <li class="entry reveal edu">
+        <div class="when">2008 — 2009</div>
+        <h3>Bachelor of Computer Science</h3>
+        <div class="org">University of Wollongong</div>
+        <p>Digital Systems Security.</p>
+      </li>
+      <li class="entry reveal ">
+        <div class="when">May 2006 — November 2008</div>
+        <h3>Software Engineer</h3>
+        <div class="org">OpenIntegration<span class="place">Singapore</span></div>
+        <p>Equipment connectivity, integration, simulation and SEMI standards compliance testing for the semiconductor industry.</p>
+        <ul><li>Applied the EDA SEMI standards across OpenEDA Simulator, OpenFabSim_300 and OpenAST.</li><li>Designed and implemented sub-modules; prototyped, tested and maintained released versions.</li><li>Handled requirements gathering, stakeholder review and support for issues from the field.</li></ul>
+      </li>
+      <li class="entry reveal ">
+        <div class="when">December 2005 — May 2006</div>
+        <h3>Software Engineer</h3>
+        <div class="org">Panamedia<span class="place">Singapore</span></div>
+        <p>Web solutions, marketing and advertising.</p>
+        <ul><li>Analysed customer requirements and proposed durable approaches.</li><li>Researched CMS platforms and frameworks to speed up delivery.</li><li>Rebuilt the company website and supported sales on graphic direction.</li></ul>
+      </li>
+      <li class="entry reveal edu">
+        <div class="when">2000 — 2003</div>
+        <h3>Diploma in Information Technology</h3>
+        <div class="org">Ngee Ann Polytechnic</div>
+        <p>Software Engineering.</p>
+      </li>
+    </ol>
+    <div class="creds">
+      <section class="reveal"><h4 class="eyebrow">Certifications</h4><ul>
+        <li>Certified ScrumMaster (CSM)</li>
+        <li>EU Cyber Resilience Act programme<small>The Linux Foundation · 2026</small></li></ul></section>
+      <section class="reveal"><h4 class="eyebrow">Top skills</h4><ul>
+        <li>Product requirements</li><li>Code review</li><li>SOLID design principles</li></ul></section>
+      <section class="reveal"><h4 class="eyebrow">Languages</h4><ul>
+        <li>English<small>Native or bilingual</small></li><li>Chinese<small>Native or bilingual</small></li></ul></section>
+    </div>
+    <section class="contact reveal" id="contact">
+      <div class="eyebrow">Get in touch</div>
+      <h4>Let's talk about software, architecture — or mooncakes.</h4>
+      <div class="actions">
+        <a class="cta" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#99;&#114;&#121;&#112;&#116;&#64;&#100;&#101;&#99;&#114;&#121;&#112;&#116;&#111;&#108;&#111;&#103;&#121;&#46;&#110;&#101;&#116;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Mail Me</a>
+        <a href="https://www.linkedin.com/in/decryp7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>LinkedIn</a>
+        <a href="https://s3.decryptology.net/shared/cv.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Curriculum Vitae</a>
+      </div>
+      <p class="colophon">© 2026 Kok Yong Teo · decryptology.net · <em>Artwork by Hannah</em></p>
+    </section>
+  </main>
+  <script>
+    // chapter rail: the moon travels with the scroll; dots mark and jump to the sections
+    (() => {
+      const rail = document.getElementById('rail'), moon = rail.querySelector('.moon'), dots = [...rail.querySelectorAll('a')];
+      const at = () => dots.map((d) => d.dataset.at === '0' ? 0 : Math.max(0, document.getElementById(d.dataset.at).offsetTop - innerHeight * 0.25));
+      const tick = () => {
+        const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        moon.style.top = (Math.min(scrollY / max, 1) * 100) + '%';
+        const pos = at(); let k = 0; pos.forEach((p, i) => { if (scrollY >= p - 2) k = i; });
+        dots.forEach((d, i) => d.classList.toggle('on', i === k));
+      };
+      addEventListener('scroll', tick, { passive: true }); addEventListener('resize', tick); tick();
+      dots.forEach((d) => d.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = d.dataset.at; const y = id === '0' ? 0 : document.getElementById(id).offsetTop - (id === 'contact' ? innerHeight * 0.2 : 0);
+        scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      }));
+    })();
+    // entries fade up as they scroll into view
+    (() => {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }),
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    })();
+  </script>
   <script type="importmap">
     { "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -181,7 +403,7 @@
   <script type="module">
     // Start the 3D scene only once the page (still photo, links) has painted and finished loading, so the
     // page itself is fast; the scene fades in over the photo a moment later.
-    const start = () => import('./main.js?v=202609290754').catch((e) => {
+    const start = () => import('./main.js?v=202609290825').catch((e) => {
       // e.g. no import-map support (iOS < 16.4): keep the still photo instead of an endless "Loading…"
       console.warn('3D scene unavailable, showing the still photo:', e);
       document.body.classList.add('still');

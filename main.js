@@ -8,8 +8,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { Ladybug } from './ladybug.js?v=202609290754';
-import { Steam } from './steam.js?v=202609290754';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { Ladybug } from './ladybug.js?v=202609290825';
+import { Steam } from './steam.js?v=202609290825';
 
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
 // three.js adds only what changes with the viewpoint: reflections from env.hdr, captured in the same room.
@@ -97,6 +98,33 @@ function fitCamera() {
 fitCamera();
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+// The page scrolls (career below the scene): the wheel scrolls the page, pinch / ctrl-wheel zooms the scene,
+// and on touch screens vertical swipes scroll while sideways swipes turn the scene.
+controls.enableZoom = false;
+renderer.domElement.style.touchAction = 'pan-y';
+renderer.domElement.addEventListener('wheel', (e) => {
+  if (!e.ctrlKey && !e.metaKey) return;                       // trackpad pinch arrives as ctrl + wheel
+  e.preventDefault();
+  const offset = camera.position.clone().sub(controls.target);
+  const d = THREE.MathUtils.clamp(offset.length() * Math.exp(e.deltaY * 0.01), controls.minDistance, controls.maxDistance);
+  camera.position.copy(controls.target).addScaledVector(offset.normalize(), d);
+}, { passive: false });
+let pinch = null;                                               // two-finger pinch on touch screens
+renderer.domElement.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+}, { passive: true });
+renderer.domElement.addEventListener('touchmove', (e) => {
+  if (e.touches.length !== 2 || !pinch) return;
+  const now = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  const offset = camera.position.clone().sub(controls.target);
+  const d = THREE.MathUtils.clamp(offset.length() * (pinch / now), controls.minDistance, controls.maxDistance);
+  camera.position.copy(controls.target).addScaledVector(offset.normalize(), d);
+  pinch = now;
+}, { passive: true });
+renderer.domElement.addEventListener('touchend', () => { pinch = null; }, { passive: true });
+// Pause the scene while the career section covers it.
+let sceneVisible = true;
+new IntersectionObserver(([e]) => { sceneVisible = e.isIntersecting; }, { threshold: 0.02 }).observe(document.getElementById('hero'));
 controls.minDistance = 0.12;
 controls.maxDistance = MAX_DISTANCE * fitScale;
 controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
@@ -111,6 +139,10 @@ const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.35, 0.6, 0.92);
 composer.addPass(bloom);
+// Macro depth of field, only while the ladybug peers into the lens.
+const macro = new BokehPass(scene, camera, { focus: 0.03, aperture: 0.0, maxblur: 0.014 });
+macro.enabled = false;
+composer.addPass(macro);
 composer.addPass(new OutputPass());
 // Photographic finish: a gentle lens vignette and fine, moving film grain (after tone mapping, in display space).
 const lens = new ShaderPass({
@@ -178,7 +210,7 @@ new GLTFLoader(manager).setDRACOLoader(draco).load((MOBILE ? 'scene-mobile.glb' 
   ladybug = new Ladybug(root, scene, camera);
   if (FORCE_3D) { window.__ladybug = ladybug; window.__cam = camera; window.__controls = controls; }   // for testing
   if (ladybug.ready) {
-    ladybug.obj.traverse((o) => { if (o.isMesh && o.name === 'Ladybug') clickable.push(o); });
+    ladybug.obj.traverse((o) => { if (o.isMesh && o.name.startsWith('Ladybug')) clickable.push(o); });
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setTimeout(() => { if (!document.body.classList.contains('still')) ladybug.intro(); }, 2500);
       ladybug.scheduleWander(performance.now() + 20000);
@@ -235,7 +267,7 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   const hit = ray.intersectObjects(clickable, false)[0];
   if (!hit) return;
   const n = hit.object.name;
-  if (ladybug && ladybug.ready && n === 'Ladybug') { ladybug.flying || ladybug.wander(true); return; }
+  if (ladybug && ladybug.ready && n.startsWith('Ladybug')) { ladybug.flying || ladybug.wander(true); return; }
   flyTo(n.startsWith('Mooncake') ? 'cake' : n.startsWith('Poster') ? 'poster' : 'box');
 });
 
@@ -268,7 +300,16 @@ renderer.setAnimationLoop((now) => {
   }
   const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 0;
   lastFrame = now;
-  if (ladybug) ladybug.update(dt, now);
+  if (!sceneVisible) return;                                    // scrolled away: skip rendering entirely
+  if (ladybug) {
+    ladybug.update(dt, now);
+    const pk = ladybug.peek || 0;
+    macro.enabled = pk > 0.02;
+    if (macro.enabled) {
+      macro.uniforms.focus.value = Math.max(ladybug.faceDistance || 0.03, 0.012);
+      macro.uniforms.aperture.value = 0.012 * pk;
+    }
+  }
   if (steam) steam.update(dt, now);
   lens.uniforms.time.value = now / 1000;
   lens.uniforms.aspect.value = window.innerWidth / window.innerHeight;

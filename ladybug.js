@@ -360,6 +360,7 @@ export class Ladybug {
     if (!this.ready) return;
     this.updateDust(dt);
     if (!this.flying) {
+      this.peek = 0;
       if (now > this.nextWander && !document.hidden) { this.wander(); this.scheduleWander(now); }
       this.setWings(this.wingOpen = Math.max(0, this.wingOpen - dt * 3), now);
       return;
@@ -370,6 +371,7 @@ export class Ladybug {
       ph.dur = Math.max(ph.min, ph.curve.getLength() / ph.speed);
     }
     if (ph.type === 'hover' && !ph.at) ph.at = this.obj.position.clone();
+    if (ph.type !== 'hover') this.peek = 0;
     this.t += dt;
     const u = Math.min(this.t / ph.dur, 1);
     let wingTarget = 0;
@@ -403,8 +405,14 @@ export class Ladybug {
       // hangs in the air before the viewer, then creeps right up to the lens face first, peers in, and backs off
       const cam = this.camera.position;
       const dir = ph.at.clone().sub(cam); const d0 = dir.length(); dir.normalize();
-      const peek = Math.pow(Math.sin(Math.PI * THREE.MathUtils.smoothstep(u, 0.1, 0.9)), 2);
-      const p = cam.clone().addScaledVector(dir, d0 - (d0 - 0.06) * peek);
+      const peek = Math.pow(Math.sin(Math.PI * THREE.MathUtils.smoothstep(u, 0.08, 0.92)), 2);
+      // up close the face moves to the centre of the frame, ~2.5 cm from the lens (the head is ~1 cm ahead of the
+      // body's origin), so it fills the view
+      const centre = this.camera.getWorldDirection(new THREE.Vector3());
+      const aim = dir.clone().lerp(centre, peek).normalize();
+      const p = cam.clone().addScaledVector(aim, d0 - (d0 - 0.036) * peek);
+      this.peek = peek;
+      this.faceDistance = p.distanceTo(cam) - 0.011;
       p.y += 0.0022 * Math.sin(now * 0.004) * (1 - peek * 0.7); p.x += 0.0014 * Math.sin(now * 0.0023) * (1 - peek * 0.7);
       this.obj.position.copy(p);
       const toCam = cam.clone().sub(p); toCam.y *= 0.4 + 0.6 * peek;          // looks straight into the lens up close
