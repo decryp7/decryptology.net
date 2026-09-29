@@ -35,6 +35,7 @@ export class Ladybug {
     this.phases = [];
     this.t = 0;
     this.wingOpen = 0;
+    this.head = this.obj.getObjectByName('Ladybug_Head') || null;
     this.nextWander = Infinity;
     this.ray = new THREE.Raycaster();
     this.tmpM = new THREE.Matrix4();
@@ -216,7 +217,11 @@ export class Ladybug {
       this.dVel[i * 3 + 1] -= 0.004 * dt;                    // settles slowly, like gilding dust
       const l = Math.max(this.dLife[i], 0);
       const tw = 0.55 + 0.45 * Math.sin(this.dSeed[i] + (1 - l) * 38);            // twinkle
-      const f = 2.6 * Math.pow(l, 1.4) * tw;                                        // HDR-bright: blooms
+      let f = 2.6 * Math.pow(l, 1.4) * tw;                                          // HDR-bright: blooms
+      if (this.camera) {
+        const dx = this.dPos[i * 3] - this.camera.position.x, dy = this.dPos[i * 3 + 1] - this.camera.position.y, dz = this.dPos[i * 3 + 2] - this.camera.position.z;
+        f *= THREE.MathUtils.smoothstep(Math.sqrt(dx * dx + dy * dy + dz * dz), 0.05, 0.12);   // fade out near the lens
+      }
       this.dCol[i * 3] = 1.0 * f; this.dCol[i * 3 + 1] = 0.8 * f; this.dCol[i * 3 + 2] = 0.45 * f;
     }
     this.dust.geometry.attributes.position.needsUpdate = true;
@@ -302,7 +307,7 @@ export class Ladybug {
           const c = this.camPoint(); const mid = from.clone().lerp(c, 0.5); mid.y += 0.04;
           return this.curve([from, from.clone().addScaledVector(UP, 0.02), mid, c]);
         } });
-        this.phases.push({ type: 'hover', dur: 4.2 });
+        this.phases.push({ type: 'hover', dur: 7.5 });
       } else if (s.rest) {
         this.phases.push({ type: 'rest', dur: s.rest, turn: s.turn || 0 });
       } else if (s.home) {
@@ -371,7 +376,7 @@ export class Ladybug {
       ph.dur = Math.max(ph.min, ph.curve.getLength() / ph.speed);
     }
     if (ph.type === 'hover' && !ph.at) ph.at = this.obj.position.clone();
-    if (ph.type !== 'hover') this.peek = 0;
+    if (ph.type !== 'hover') { this.peek = 0; if (this.head) this.head.rotation.set(0, 0, 0); }
     this.t += dt;
     const u = Math.min(this.t / ph.dur, 1);
     let wingTarget = 0;
@@ -405,19 +410,34 @@ export class Ladybug {
       // hangs in the air before the viewer, then creeps right up to the lens face first, peers in, and backs off
       const cam = this.camera.position;
       const dir = ph.at.clone().sub(cam); const d0 = dir.length(); dir.normalize();
-      const peek = Math.pow(Math.sin(Math.PI * THREE.MathUtils.smoothstep(u, 0.08, 0.92)), 2);
+      // approach (0-0.2), stay close and inspect the lens (0.2-0.82), then a startled little hop back (0.82-1)
+      const inT = THREE.MathUtils.smoothstep(u, 0.04, 0.2), outT = THREE.MathUtils.smoothstep(u, 0.82, 0.97);
+      const peek = inT * (1 - outT);
       // up close the face moves to the centre of the frame, ~2.5 cm from the lens (the head is ~1 cm ahead of the
       // body's origin), so it fills the view
       const centre = this.camera.getWorldDirection(new THREE.Vector3());
       const aim = dir.clone().lerp(centre, peek).normalize();
-      const p = cam.clone().addScaledVector(aim, d0 - (d0 - 0.036) * peek);
+      // curiosity: while close, it edges nearer in small "sniffs", as if inspecting the glass
+      const c = THREE.MathUtils.smoothstep(u, 0.2, 0.3) * (1 - THREE.MathUtils.smoothstep(u, 0.76, 0.82));
+      const tc = (u - 0.2) * ph.dur;                                 // seconds into the inspection
+      const sniff = c * (0.0035 * Math.max(0, Math.sin(tc * 9)) * (Math.sin(tc * 1.3) > 0.3 ? 1 : 0)
+                         - 0.004 * THREE.MathUtils.smoothstep(tc, 3.4, 3.7) * (1 - THREE.MathUtils.smoothstep(tc, 3.9, 4.4)));
+      const p = cam.clone().addScaledVector(aim, d0 - (d0 - 0.036) * peek - sniff);
       this.peek = peek;
       this.faceDistance = p.distanceTo(cam) - 0.011;
       p.y += 0.0022 * Math.sin(now * 0.004) * (1 - peek * 0.7); p.x += 0.0014 * Math.sin(now * 0.0023) * (1 - peek * 0.7);
       this.obj.position.copy(p);
       const toCam = cam.clone().sub(p); toCam.y *= 0.4 + 0.6 * peek;          // looks straight into the lens up close
-      this.orient(toCam, UP, dt, 3 + 3 * peek);
-      this.emit(p, 1, 0.005, 0.003);
+      // tilts its head one way, then the other (like a puzzled dog), glances up and aside, then back at the lens
+      const tilt = c * (0.42 * Math.sin(Math.min(tc, 3.2) * Math.PI / 1.6) * THREE.MathUtils.smoothstep(tc, 0.1, 0.5));
+      const glance = c * 0.35 * Math.sin(Math.max(0, tc - 2.0) * 2.2) * (tc > 2.0 && tc < 3.4 ? 1 : 0);
+      const up = UP.clone().applyAxisAngle(toCam.clone().normalize(), tilt);
+      const look = toCam.clone().applyAxisAngle(UP, glance);
+      look.y += c * 0.012 * Math.sin(tc * 0.9);
+      this.orient(look, up, dt, 4 + 4 * peek);
+      if (this.head) this.head.rotation.set(tilt * 0.6, glance * 0.5, 0);    // the head moves a little more than the body
+      if (u > 0.93 && !ph.startled) { ph.startled = true; this.emit(p, 10, 0.006, 0.012); }  // oh! a little puff of gold
+      if (peek < 0.3) this.emit(p, 1, 0.005, 0.003);           // no dust right in front of the lens: it would blur the face
       wingTarget = 1;
     } else if (ph.type === 'rest') {
       // settled: fold wings, turn slowly on the spot

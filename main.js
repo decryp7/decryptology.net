@@ -9,7 +9,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
-import { Ladybug } from './ladybug.js?v=202609290825';
+import { Ladybug } from './ladybug.js?v=202609290903';
 import { Steam } from './steam.js?v=202609290825';
 
 // Lighting is baked in Cycles (scene.glb stores it as emissive maps with a black base colour);
