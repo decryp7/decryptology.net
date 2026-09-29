@@ -36,6 +36,16 @@ export class Ladybug {
     this.t = 0;
     this.wingOpen = 0;
     this.head = this.obj.getObjectByName('Ladybug_Head') || null;
+    // jointed legs (Ladybug_Leg0L ... Leg2R), hinged at the hip; tripod gait groups: 0L 1R 2L / 0R 1L 2R
+    this.legs = [];
+    this.obj.traverse((o) => {
+      const m = /^Ladybug_Leg(\d)([LR])/.exec(o.name);
+      if (!m || o.userData.leg) return;
+      const pair = +m[1], side = o.position.z < 0 ? -1 : 1;           // three.js z: Blender's left (+Y) is -z
+      o.userData.leg = { pair, side, group: (pair + (m[2] === 'L' ? 0 : 1)) % 2, rest: o.quaternion.clone() };
+      this.legs.push(o);
+    });
+    this.gait = 0; this.stepping = 0; this.nextGroom = 0;
     this.nextWander = Infinity;
     this.ray = new THREE.Raycaster();
     this.tmpM = new THREE.Matrix4();
@@ -44,6 +54,26 @@ export class Ladybug {
   }
 
   get ready() { return !!this.obj; }
+
+  poseLegs(dt, now, tuck, walk) {
+    // tuck: 0 standing .. 1 folded tight under the body (flight). walk: 0..1 stepping amplitude.
+    if (!this.legs || !this.legs.length) return;
+    this.gait += dt * 2 * Math.PI * 3.2 * Math.max(walk, 0.0001);
+    const groom = this.groom > 0 ? Math.sin((1 - this.groom) * Math.PI * 6) : 0;
+    const q = new THREE.Quaternion(), e = new THREE.Euler();
+    for (const leg of this.legs) {
+      const { pair, side, group, rest } = leg.userData.leg;
+      const ph = this.gait + group * Math.PI;
+      const swing = walk * 0.38 * Math.sin(ph);                             // forward/back about the vertical
+      const lift = walk * 0.32 * Math.max(0, Math.cos(ph));                 // raised while swinging forward
+      // in flight the legs fold up against the body, the front pair angled forward, the hind pair back
+      const fold = tuck * 0.95, spread = tuck * (pair === 0 ? 0.5 : pair === 2 ? -0.45 : 0);
+      let x = side * (fold + lift), y = side * (swing + spread);
+      if (pair === 0 && groom) { x += -side * 0.5 * Math.abs(groom); y += side * 0.4 * groom; }   // front legs clean the face
+      e.set(x, y, 0, 'YXZ'); q.setFromEuler(e);
+      leg.quaternion.copy(rest).multiply(q);
+    }
+  }
   get flying() { return this.phases.length > 0; }
 
   // ------------------------------------------------------------------ parts
@@ -307,7 +337,8 @@ export class Ladybug {
           const c = this.camPoint(); const mid = from.clone().lerp(c, 0.5); mid.y += 0.04;
           return this.curve([from, from.clone().addScaledVector(UP, 0.02), mid, c]);
         } });
-        this.phases.push({ type: 'hover', dur: 7.5 });
+        this.phases.push({ type: 'hover', dur: 7.5, stay: true });
+        this.phases.push({ type: 'crawl', dur: 6.5 });
       } else if (s.rest) {
         this.phases.push({ type: 'rest', dur: s.rest, turn: s.turn || 0 });
       } else if (s.home) {
@@ -368,6 +399,10 @@ export class Ladybug {
       this.peek = 0;
       if (now > this.nextWander && !document.hidden) { this.wander(); this.scheduleWander(now); }
       this.setWings(this.wingOpen = Math.max(0, this.wingOpen - dt * 3), now);
+      if (now > this.nextGroom) { this.groom = 1; this.nextGroom = now + 9000 + Math.random() * 12000; }
+      this.groom = Math.max(0, (this.groom || 0) - dt / 1.6);
+      this.stepping *= Math.exp(-dt * 6);
+      this.poseLegs(dt, now, this.wingOpen, this.stepping);
       return;
     }
     const ph = this.phases[this.phase];
@@ -376,7 +411,7 @@ export class Ladybug {
       ph.dur = Math.max(ph.min, ph.curve.getLength() / ph.speed);
     }
     if (ph.type === 'hover' && !ph.at) ph.at = this.obj.position.clone();
-    if (ph.type !== 'hover') { this.peek = 0; if (this.head) this.head.rotation.set(0, 0, 0); }
+    if (ph.type !== 'hover' && ph.type !== 'crawl') { this.peek = 0; if (this.head) this.head.rotation.set(0, 0, 0); }
     this.t += dt;
     const u = Math.min(this.t / ph.dur, 1);
     let wingTarget = 0;
@@ -411,7 +446,7 @@ export class Ladybug {
       const cam = this.camera.position;
       const dir = ph.at.clone().sub(cam); const d0 = dir.length(); dir.normalize();
       // approach (0-0.2), stay close and inspect the lens (0.2-0.82), then a startled little hop back (0.82-1)
-      const inT = THREE.MathUtils.smoothstep(u, 0.04, 0.2), outT = THREE.MathUtils.smoothstep(u, 0.82, 0.97);
+      const inT = THREE.MathUtils.smoothstep(u, 0.04, 0.2), outT = ph.stay ? 0 : THREE.MathUtils.smoothstep(u, 0.82, 0.97);
       const peek = inT * (1 - outT);
       // up close the face moves to the centre of the frame, ~2.5 cm from the lens (the head is ~1 cm ahead of the
       // body's origin), so it fills the view
@@ -436,9 +471,32 @@ export class Ladybug {
       look.y += c * 0.012 * Math.sin(tc * 0.9);
       this.orient(look, up, dt, 4 + 4 * peek);
       if (this.head) this.head.rotation.set(tilt * 0.6, glance * 0.5, 0);    // the head moves a little more than the body
-      if (u > 0.93 && !ph.startled) { ph.startled = true; this.emit(p, 10, 0.006, 0.012); }  // oh! a little puff of gold
+      if (!ph.stay && u > 0.93 && !ph.startled) { ph.startled = true; this.emit(p, 10, 0.006, 0.012); }  // oh! a little puff of gold
       if (peek < 0.3) this.emit(p, 1, 0.005, 0.003);           // no dust right in front of the lens: it would blur the face
       wingTarget = 1;
+    } else if (ph.type === 'crawl') {
+      // lands on the lens itself and walks across the glass: we see its underside and its legs stepping,
+      // in a gentle S across the frame, then it steps off the edge
+      const cam = this.camera;
+      if (!ph.from) { ph.from = this.obj.position.clone(); ph.q0 = this.obj.quaternion.clone(); }
+      const fwd = cam.getWorldDirection(new THREE.Vector3());
+      const right = new THREE.Vector3().crossVectors(fwd, cam.up).normalize();
+      const upv = new THREE.Vector3().crossVectors(right, fwd).normalize();
+      const aspect = cam.aspect || 1, d = 0.03;
+      const hH = d * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)), hW = hH * aspect;
+      const k = THREE.MathUtils.smoothstep(u, 0.1, 1);                            // path parameter
+      const sx = THREE.MathUtils.lerp(-0.05, 1.35, k), sy = -0.15 + 0.35 * Math.sin(k * Math.PI * 1.3);
+      const target = cam.position.clone().addScaledVector(fwd, d).addScaledVector(right, sx * hW).addScaledVector(upv, sy * hH);
+      const land = THREE.MathUtils.smoothstep(u, 0, 0.1);
+      this.obj.position.copy(ph.from).lerp(target, land);
+      // belly to the glass: its back points away from us; head along the direction of travel
+      const k2 = Math.min(k + 0.02, 1);
+      const sx2 = THREE.MathUtils.lerp(-0.05, 1.35, k2), sy2 = -0.15 + 0.35 * Math.sin(k2 * Math.PI * 1.3);
+      const dir = right.clone().multiplyScalar((sx2 - sx) * hW).addScaledVector(upv, (sy2 - sy) * hH);
+      if (dir.lengthSq() < 1e-12) dir.copy(right);
+      this.orient(dir, fwd, dt, 6);
+      this.peek = 1; this.faceDistance = d;
+      wingTarget = u < 0.08 ? 1 : 0;
     } else if (ph.type === 'rest') {
       // settled: fold wings, turn slowly on the spot
       if (ph.turn) this.obj.rotateOnWorldAxis(UP, ph.turn * dt / ph.dur);
@@ -448,6 +506,9 @@ export class Ladybug {
     }
     this.wingOpen += (wingTarget - this.wingOpen) * (1 - Math.exp(-dt * 10));
     this.setWings(this.wingOpen, now);
+    const walkTarget = ph.type === 'crawl' ? 1 : ph.type === 'rest' && ph.turn ? 0.5 : 0;
+    this.stepping += (walkTarget - this.stepping) * (1 - Math.exp(-dt * 8));
+    this.poseLegs(dt, now, this.wingOpen, this.stepping);
 
     if (u >= 1) {
       this.phase += 1; this.t = 0;
